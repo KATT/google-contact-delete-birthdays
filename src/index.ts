@@ -28,10 +28,23 @@ class GoogleContactsManager {
       console.log('\nTo get started:');
       console.log('1. Go to https://console.cloud.google.com/');
       console.log('2. Create a new project or select existing one');
-      console.log('3. Enable the Google Contacts + People API');
+      console.log('3. Enable the Google People API (Contacts API)');
       console.log('4. Create credentials (OAuth 2.0 Client IDs)');
-      console.log('5. Download the credentials.json file');
-      console.log('6. Place it in the current directory\n');
+      console.log('5. Set redirect URI to: http://localhost:3000');
+      console.log('6. Set up OAuth consent screen');
+      console.log('7. Add your email as a TEST USER in OAuth consent screen');
+      console.log('8. Download the credentials.json file');
+      console.log('9. Place it in the current directory');
+      console.log(
+        chalk.yellow(
+          '\n⚠️  IMPORTANT: Add your email as a test user to avoid "Access blocked" errors!',
+        ),
+      );
+      console.log(
+        chalk.cyan(
+          '⚠️  CALLBACK URL: Set http://localhost:3000 as redirect URI\n',
+        ),
+      );
       process.exit(1);
     }
 
@@ -83,35 +96,44 @@ class GoogleContactsManager {
     // Create a simple HTTP server to capture the callback
     return new Promise<void>((resolve, reject) => {
       const server = createServer(async (req, res) => {
-        if (req.url?.startsWith('/?code=')) {
-          const url = new URL(req.url, `http://${req.headers.host}`);
-          const code = url.searchParams.get('code');
+        if (!req.url?.startsWith('/?code=')) {
+          res.statusCode = 404;
+          res.end();
+          return;
+        }
+        const url = new URL(req.url, `http://${req.headers.host}`);
+        const code = url.searchParams.get('code');
 
-          res.writeHead(200, { 'Content-Type': 'text/html' });
-          res.end(`
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(`
 				<html>
-				  <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
-					<h2 style="color: green;">✅ Authentication Successful!</h2>
+				  <body>
+					<h2 style="color: green;">Authentication Successful!</h2>
 					<p>You can now close this tab and return to the terminal.</p>
 				  </body>
 				</html>
 			  `);
 
-          server.close();
+        server.close();
 
-          try {
-            const { tokens } = await this.auth.getToken(code!);
-            this.auth.setCredentials(tokens);
+        try {
+          const { tokens } = await this.auth.getToken(code!);
+          this.auth.setCredentials(tokens);
 
-            // Save token for future use
-            fs.writeFileSync(TOKEN_PATH, JSON.stringify(tokens, null, 2));
+          // Save token for future use
+          fs.writeFileSync(TOKEN_PATH, JSON.stringify(tokens, null, 2));
 
-            console.log(chalk.green('✅ Token saved successfully!\n'));
-            resolve();
-          } catch (error) {
-            console.error(chalk.red('❌ Error getting token:'), error);
-            reject(error);
-          }
+          console.log(chalk.green('✅ Token saved successfully!\n'));
+          resolve();
+        } catch (error) {
+          console.error(chalk.red('❌ Error getting token:'), error);
+          console.log(chalk.yellow('\n💡 If you see "Access blocked" errors:'));
+          console.log('1. Go to https://console.cloud.google.com/');
+          console.log('2. Navigate to APIs & Services > OAuth consent screen');
+          console.log('3. Scroll down to "Test users" section');
+          console.log('4. Click "+ ADD USERS" and add your email address');
+          console.log('5. Save and try again\n');
+          reject(error);
         }
       });
 
@@ -125,25 +147,6 @@ class GoogleContactsManager {
         reject(new Error('Authentication timeout'));
       }, 300000);
     });
-  }
-
-  async authenticate() {
-    console.log(chalk.yellow('🔐 Setting up authentication...\n'));
-
-    // Check if credentials file exists
-    try {
-      fs.accessSync(CREDENTIALS_PATH);
-    } catch {
-      console.log(chalk.red('❌ Missing credentials.json file!'));
-      console.log('\nTo get started:');
-      console.log('1. Go to https://console.cloud.google.com/');
-      console.log('2. Create a new project or select existing one');
-      console.log('3. Enable the Google Contacts + People API');
-      console.log('4. Create credentials (OAuth 2.0 Client IDs)');
-      console.log('5. Download the credentials.json file');
-      console.log('6. Place it in the current directory\n');
-      process.exit(1);
-    }
   }
 
   async showMainMenu() {
@@ -187,10 +190,12 @@ class GoogleContactsManager {
       );
       for (const [index, contact] of contacts.entries()) {
         console.log(
-          `${chalk.cyan(index.toString().padStart(4))}. ${chalk.white(
+          `${chalk.cyan((index + 1).toString().padStart(4))}. ${chalk.white(
             contact.displayName,
           )} - ${chalk.yellow(
-            contact.birthdays?.map((it) => JSON.stringify(it.date)),
+            contact.birthdays
+              ?.map((it) => JSON.stringify(it.date))
+              .join(', ') || 'Unknown Date',
           )}`,
         );
       }
@@ -227,15 +232,22 @@ class GoogleContactsManager {
       name: 'selectedContacts',
       message: 'Select contacts to remove birthdays from:',
       choices: contacts.map((contact) => ({
-        name: `${contact.displayName} - ${contact.birthdays?.map((it) =>
-          JSON.stringify(it.date),
-        )}`,
+        name: `${contact.displayName} - ${
+          contact.birthdays?.map((it) => JSON.stringify(it.date)).join(', ') ||
+          'Unknown Date'
+        }`,
         value: contact,
       })),
       pageSize: 15,
     });
 
     const selectedContacts = res.selectedContacts as typeof contacts;
+
+    if (selectedContacts.length === 0) {
+      console.log(chalk.gray('No contacts selected.'));
+      await this.showMainMenu();
+      return;
+    }
 
     const { confirm } = await inquirer.prompt([
       {

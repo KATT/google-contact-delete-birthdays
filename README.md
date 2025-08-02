@@ -14,6 +14,8 @@ A command-line tool to manage and delete birthdays from your Google Contacts.
 
 Before you can use this tool, you need to set up Google API credentials:
 
+> **⚠️ IMPORTANT**: After setting up credentials, you must add your email as a test user to avoid "Access blocked" errors!
+
 ### 1. Create a Google Cloud Project
 
 1. Go to the [Google Cloud Console](https://console.cloud.google.com/)
@@ -27,12 +29,27 @@ Before you can use this tool, you need to set up Google API credentials:
 3. If prompted, configure the OAuth consent screen first:
    - Choose **External** user type (unless you have a Google Workspace)
    - Fill in the required fields (App name, User support email, etc.)
-   - Add your email to test users
+   - **CRITICAL**: Add your email to test users (see step 4 below)
 4. For Application type, choose **Desktop application**
-5. Give it a name (e.g., "Contacts Birthday Manager")
-6. Click **Create**
+5. **IMPORTANT**: In the **Authorized redirect URIs** section, add:
+   ```
+   http://localhost:3000
+   ```
+   > **Note**: This URL is required because the CLI creates a temporary local server on port 3000 to receive the OAuth authorization code.
+6. Give it a name (e.g., "Contacts Birthday Manager")
+7. Click **Create**
 
-### 3. Download Credentials
+### 3. Add Yourself as Test User (REQUIRED)
+
+**This step is essential to avoid "Access blocked" errors:**
+
+1. Go to **APIs & Services** > **OAuth consent screen**
+2. Scroll down to **Test users** section
+3. Click **+ ADD USERS**
+4. Add your email address (the one you'll authenticate with)
+5. Click **Save**
+
+### 4. Download Credentials
 
 1. Download the credentials JSON file
 2. Rename it to `credentials.json`
@@ -53,7 +70,7 @@ Before you can use this tool, you need to set up Google API credentials:
 
 ## Usage
 
-Run the CLI tool:
+Run the CLI tool:\*\*\*\*
 
 ```bash
 pnpm start
@@ -109,8 +126,21 @@ contacts-del/
 - These files are excluded from git via `.gitignore`
 - The OAuth token has limited scope (only contacts access)
 - All operations require explicit user confirmation
+- The OAuth callback uses `http://localhost:3000` (only accessible locally)
 
 ## Troubleshooting
+
+### ❌ "Access blocked: contacts has not completed the Google verification process"
+
+**This is the most common issue!** Fix it by adding yourself as a test user:
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Navigate to **APIs & Services** > **OAuth consent screen**
+3. Scroll down to **Test users** section
+4. Click **+ ADD USERS**
+5. Add your email address (the one you'll authenticate with)
+6. Click **Save**
+7. Try running the CLI again
 
 ### "Missing credentials.json file!"
 
@@ -131,6 +161,16 @@ Some contacts might be read-only or have restrictions. The tool will continue wi
 ### Browser doesn't open automatically
 
 If the browser doesn't open automatically for authentication, copy the URL shown in the terminal and paste it into your browser manually.
+
+### "redirect_uri_mismatch" error
+
+If you see a redirect URI mismatch error:
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Navigate to **APIs & Services** > **Credentials**
+3. Click on your OAuth 2.0 Client ID
+4. In **Authorized redirect URIs**, make sure you have: `http://localhost:3000`
+5. Save and try again
 
 ## Development
 
