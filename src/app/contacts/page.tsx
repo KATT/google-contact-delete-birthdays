@@ -1,12 +1,12 @@
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -14,13 +14,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { clearAuthToken, getContacts, isAuthenticated } from '@/lib/actions';
-import { ArrowLeft, Calendar, Trash2, Users } from 'lucide-react';
-import Link from 'next/link';
-import { redirect } from 'next/navigation';
-import { Suspense } from 'react';
-import { DeleteButton } from './delete-button';
+} from "@/components/ui/table";
+import { clearAuthToken, getContacts, isAuthenticated } from "@/lib/actions";
+import { ArrowLeft, Calendar, Trash2, Users } from "lucide-react";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import { DeleteButton } from "./delete-button";
 
 async function ContactsList() {
   const contacts = await getContacts();
@@ -76,18 +76,18 @@ async function ContactsList() {
                       const date = birthday.date;
                       if (date?.month && date?.day) {
                         return `${date.month}/${date.day}${
-                          date.year ? `/${date.year}` : ''
+                          date.year ? `/${date.year}` : ""
                         }`;
                       }
-                      return 'Unknown Date';
+                      return "Unknown Date";
                     })
-                    .join(', ') || 'Unknown Date'}
+                    .join(", ") || "Unknown Date"}
                 </TableCell>
                 <TableCell className="text-right">
                   <DeleteButton
                     resourceName={contact.resourceName!}
                     etag={contact.etag!}
-                    contactName={contact.displayName}
+                    birthdays={contact.birthdays || []}
                   />
                 </TableCell>
               </TableRow>
@@ -101,9 +101,9 @@ async function ContactsList() {
 
 async function LogoutButton() {
   async function handleLogout() {
-    'use server';
+    "use server";
     await clearAuthToken();
-    redirect('/');
+    redirect("/");
   }
 
   return (
@@ -119,7 +119,7 @@ export default async function ContactsPage() {
   const authenticated = await isAuthenticated();
 
   if (!authenticated) {
-    redirect('/');
+    redirect("/");
   }
 
   return (
