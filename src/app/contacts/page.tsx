@@ -101,16 +101,18 @@ async function ContactsList() {
                 </TableCell>
                 <TableCell>
                   {contact.birthdays
-                    ?.map((birthday) => {
-                      const date = birthday.date;
-                      if (date?.month && date?.day) {
-                        return `${date.month}/${date.day}${
-                          date.year ? `/${date.year}` : ""
-                        }`;
-                      }
-                      return "Unknown Date";
+                    ?.filter((it) => !!it.date)
+                    .map((it, idx) => {
+                      const date = it.date!;
+
+                      let year = date.year ?? "????";
+                      let month =
+                        date.month?.toString().padStart(2, "0") ?? "??";
+                      let day = date.day?.toString().padStart(2, "0") ?? "??";
+
+                      return `${year}-${month}-${day}`;
                     })
-                    .join(", ") || "Unknown Date"}
+                    .join(", ")}
                 </TableCell>
                 <TableCell className="text-right">
                   <DeleteButton
