@@ -1,14 +1,9 @@
 "use server";
 
-import { people_v1 } from "googleapis";
+import { google, people_v1 } from "googleapis";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import {
-  deleteBirthdayFromContact,
-  fetchContactsWithBirthdays,
-  getAuthUrl,
-  restoreBirthdayToContact,
-} from "./google";
+import { getAuthenticatedClient, getAuthUrl } from "./google";
 
 export async function startOAuth() {
   const authUrl = getAuthUrl();
@@ -30,53 +25,33 @@ export async function clearAuthToken() {
   cookieStore.delete("google_token");
 }
 
-export async function getContacts() {
-  try {
-    return await fetchContactsWithBirthdays();
-  } catch (error) {
-    console.error("Error fetching contacts:", error);
-    return [];
-  }
-}
-
-export async function deleteBirthday(options: {
+export async function setBirthdays(options: {
   resourceName: string;
+  birthdays: people_v1.Schema$Birthday[];
   etag: string;
 }) {
-  try {
-    const result = await deleteBirthdayFromContact({
-      resourceName: options.resourceName,
-      etag: options.etag,
-    });
-    return {
-      success: true as const,
-      originalBirthdays: result.originalBirthdays,
-      etag: result.updateResult.data.etag,
-    };
-  } catch (error) {
-    console.error("Error deleting birthday:", error);
-    return {
-      success: false as const,
-      error: error instanceof Error ? error.message : "Unknown error",
-    };
-  }
-}
+  const auth = await getAuthenticatedClient();
+  if (!auth) throw new Error("Not authenticated");
+  const people = google.people({ version: "v1", auth });
 
-export async function undoDeleteBirthday(options: {
-  resourceName: string;
-  originalBirthdays: people_v1.Schema$Birthday[];
-}) {
+  // Perform the deletion
   try {
-    const result = await restoreBirthdayToContact({
+    const updateResult = await people.people.updateContact({
       resourceName: options.resourceName,
-      birthdays: options.originalBirthdays,
+      updatePersonFields: "birthdays",
+      requestBody: {
+        resourceName: options.resourceName,
+        etag: options.etag,
+        birthdays: options.birthdays,
+      },
     });
+
     return {
       success: true as const,
-      etag: result.data.etag,
+      etag: updateResult.data.etag,
     };
   } catch (error) {
-    console.error("Error restoring birthday:", error);
+    console.error("Error setting birthdays:", error);
     return {
       success: false as const,
       error: error instanceof Error ? error.message : "Unknown error",

@@ -1,29 +1,20 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { deleteBirthday, undoDeleteBirthday } from "@/lib/actions";
+import { setBirthdays } from "@/lib/actions";
 import type { people_v1 } from "googleapis";
 import { Loader2, Undo2, X } from "lucide-react";
 import { useState, useTransition } from "react";
 
 type DeleteState = "idle" | "deleted";
 
-interface DeleteButtonProps {
+export function DeleteButton(props: {
   resourceName: string;
   etag: string;
   birthdays: people_v1.Schema$Birthday[];
-}
-
-export function DeleteButton({
-  resourceName,
-  etag: initialEtag,
-  birthdays,
-}: DeleteButtonProps) {
+}) {
   const [state, setState] = useState<DeleteState>("idle");
-  const [etag, setEtag] = useState(initialEtag);
-  const [originalBirthdays, setOriginalBirthdays] = useState<
-    people_v1.Schema$Birthday[]
-  >([]);
+  const [etag, setEtag] = useState(props.etag);
   const [isPending, startTransition] = useTransition();
 
   switch (state) {
@@ -36,15 +27,15 @@ export function DeleteButton({
             size="sm"
             onClick={() => {
               startTransition(async () => {
-                const result = await undoDeleteBirthday({
-                  resourceName,
-                  originalBirthdays,
+                const result = await setBirthdays({
+                  resourceName: props.resourceName,
+                  birthdays: props.birthdays,
+                  etag,
                 });
                 startTransition(() => {
                   if (result.success) {
                     setState("idle");
-                    setOriginalBirthdays([]);
-                    if (result.etag) setEtag(result.etag);
+                    setEtag(result.etag!);
                   } else {
                     alert("Failed to restore birthday. Please try again.");
                   }
@@ -74,12 +65,15 @@ export function DeleteButton({
           size="sm"
           onClick={() => {
             startTransition(async () => {
-              const result = await deleteBirthday({ resourceName, etag });
+              const result = await setBirthdays({
+                resourceName: props.resourceName,
+                birthdays: [],
+                etag,
+              });
               startTransition(() => {
                 if (result.success) {
-                  setOriginalBirthdays(result.originalBirthdays || []);
                   setState("deleted");
-                  if (result.etag) setEtag(result.etag);
+                  setEtag(result.etag!);
                 } else {
                   alert("Failed to delete birthday. Please try again.");
                 }

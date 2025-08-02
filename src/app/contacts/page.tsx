@@ -15,7 +15,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { clearAuthToken, getContacts, isAuthenticated } from "@/lib/actions";
+import { clearAuthToken, isAuthenticated } from "@/lib/actions";
+import { fetchContactsWithBirthdays } from "@/lib/google";
 import { ArrowLeft, Calendar, Trash2, Users } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -23,7 +24,7 @@ import { Suspense } from "react";
 import { DeleteButton } from "./delete-button";
 
 async function ContactsList() {
-  const contacts = await getContacts();
+  const contacts = await fetchContactsWithBirthdays();
 
   if (contacts.length === 0) {
     return (

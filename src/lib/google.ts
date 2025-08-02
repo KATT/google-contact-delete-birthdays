@@ -1,4 +1,4 @@
-import { google, people_v1 } from "googleapis";
+import { google } from "googleapis";
 import { cookies } from "next/headers";
 
 // Configuration
@@ -90,76 +90,4 @@ export async function fetchContactsWithBirthdays() {
       };
     })
     .sort((a, b) => a.displayName.localeCompare(b.displayName));
-}
-
-export async function getContactDetails(resourceName: string) {
-  const auth = await getAuthenticatedClient();
-  if (!auth) throw new Error("Not authenticated");
-
-  const people = google.people({ version: "v1", auth });
-
-  return people.people.get({
-    resourceName,
-    personFields: "birthdays,metadata",
-  });
-}
-
-export async function deleteBirthdayFromContact(options: {
-  resourceName: string;
-  etag: string;
-}) {
-  const auth = await getAuthenticatedClient();
-  if (!auth) throw new Error("Not authenticated");
-
-  const people = google.people({ version: "v1", auth });
-
-  // Get current contact data before deletion
-  const currentContact = await people.people.get({
-    resourceName: options.resourceName,
-    personFields: "birthdays,metadata",
-  });
-
-  const originalBirthdays = currentContact.data.birthdays || [];
-
-  // Perform the deletion
-  const updateResult = await people.people.updateContact({
-    resourceName: options.resourceName,
-    updatePersonFields: "birthdays",
-    requestBody: {
-      resourceName: options.resourceName,
-      etag: options.etag,
-      birthdays: [], // Remove all birthdays
-    },
-  });
-
-  return {
-    updateResult,
-    originalBirthdays,
-  };
-}
-
-export async function restoreBirthdayToContact(options: {
-  resourceName: string;
-  birthdays: people_v1.Schema$Birthday[];
-}) {
-  const auth = await getAuthenticatedClient();
-  if (!auth) throw new Error("Not authenticated");
-
-  const people = google.people({ version: "v1", auth });
-
-  // Get current contact data to get the latest etag
-  const currentContact = await people.people.get({
-    resourceName: options.resourceName,
-    personFields: "birthdays,metadata",
-  });
-
-  return people.people.updateContact({
-    resourceName: options.resourceName,
-    updatePersonFields: "birthdays",
-    requestBody: {
-      resourceName: options.resourceName,
-      etag: currentContact.data.etag,
-      birthdays: options.birthdays,
-    },
-  });
 }
