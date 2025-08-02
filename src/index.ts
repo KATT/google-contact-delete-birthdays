@@ -39,7 +39,7 @@ class GoogleContactsManager {
       console.log('\nTo get started:');
       console.log('1. Go to https://console.cloud.google.com/');
       console.log('2. Create a new project or select existing one');
-      console.log('3. Enable the Google Contacts API');
+      console.log('3. Enable the Google Contacts + People API');
       console.log('4. Create credentials (OAuth 2.0 Client IDs)');
       console.log('5. Download the credentials.json file');
       console.log('6. Place it in the current directory\n');
@@ -131,8 +131,6 @@ class GoogleContactsManager {
       });
     }
   }
-
-  async getNewToken(oAuth2Client: any) {}
 
   async showMainMenu() {
     const { action } = await inquirer.prompt({
@@ -247,12 +245,9 @@ class GoogleContactsManager {
       try {
         const people = google.people({ version: 'v1', auth: this.auth });
 
-        // Create updated contact without birthdays
-        const updateMask = 'birthdays';
-
         await people.people.updateContact({
           resourceName: contact.resourceName!,
-          updatePersonFields: updateMask,
+          updatePersonFields: 'birthdays',
           requestBody: {
             resourceName: contact.resourceName,
             etag: contact.etag,
@@ -286,29 +281,40 @@ class GoogleContactsManager {
     }
   }
 
-  async fetchContactsWithBirthdays() {
+  async fetchAllContacts() {
     const people = google.people({ version: 'v1', auth: this.auth });
+    function fetchList(pageToken: string | undefined) {
+      return people.people.connections.list({
+        resourceName: 'people/me',
+        pageSize: 1000,
+        personFields: 'names,birthdays,metadata',
+        pageToken,
+      });
+    }
 
-    const response = await people.people.connections.list({
-      resourceName: 'people/me',
-      pageSize: 1000,
-      personFields: 'names,birthdays,metadata',
-    });
+    let pageToken: string | undefined | null = undefined;
+    let responses: Awaited<ReturnType<typeof fetchList>>[] = [];
 
-    const contacts = response.data.connections || [];
+    let response;
+    do {
+      response = await fetchList(pageToken);
+      pageToken = response.data.nextPageToken;
+      responses.push(response);
+    } while (pageToken);
+
+    return responses;
+  }
+
+  async fetchContactsWithBirthdays() {
+    const responses = await this.fetchAllContacts();
+
+    const contacts = responses.map((it) => it.data.connections || []).flat();
 
     return contacts
-      .filter((contact) => contact.birthdays && contact.birthdays.length > 0)
+      .filter((contact) => contact.birthdays?.filter((it) => it.date).length)
       .map((contact) => {
         const displayName =
           contact.names?.[0]?.displayName || 'Unknown Contact';
-        const birthday = contact.birthdays?.[0]?.date;
-        const birthdayText = birthday
-          ? `${birthday.month?.toString().padStart(2, '0')}/${birthday.day
-              ?.toString()
-              .padStart(2, '0')}${birthday.year ? `/${birthday.year}` : ''}`
-          : 'Unknown Date';
-
         return {
           ...contact,
           displayName,
