@@ -4,13 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/index.ts"
+    "start": "tsx src/index.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/inquirer": "^9.0.8",
     "@types/node": "^24.1.0",
+    "chalk": "^5.4.1",
+    "googleapis": "^154.1.0",
+    "inquirer": "^12.9.0",
+    "open": "^10.2.0",
     "tsx": "^4.20.3",
     "typescript": "^5.9.2"
   },
