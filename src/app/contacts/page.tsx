@@ -15,16 +15,44 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { clearAuthToken, isAuthenticated } from "@/lib/actions";
+import { clearAuthToken, isAuthenticated, startOAuth } from "@/lib/actions";
 import { fetchContactsWithBirthdays } from "@/lib/google";
-import { ArrowLeft, Calendar, Trash2, Users } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  Calendar,
+  RefreshCw,
+  Trash2,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { DeleteButton } from "./delete-button";
 
 async function ContactsList() {
-  const contacts = await fetchContactsWithBirthdays();
+  let contacts;
+  try {
+    contacts = await fetchContactsWithBirthdays();
+  } catch (error) {
+    console.warn("Error loading contacts:", error);
+
+    // Check if it's an authentication error
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    const isAuthError =
+      errorMessage.includes("refresh token") ||
+      errorMessage.includes("authentication") ||
+      errorMessage.includes("unauthorized") ||
+      errorMessage.includes("Not authenticated");
+
+    if (isAuthError) {
+      return <AuthenticationError />;
+    }
+
+    // For other errors, show a generic error
+    return <GenericError errorMessage={errorMessage} />;
+  }
 
   if (contacts.length === 0) {
     return (
@@ -95,6 +123,64 @@ async function ContactsList() {
             ))}
           </TableBody>
         </Table>
+      </CardContent>
+    </Card>
+  );
+}
+
+async function GenericError({ errorMessage }: { errorMessage: string }) {
+  async function handleRetry() {
+    "use server";
+    redirect("/contacts");
+  }
+
+  return (
+    <Card>
+      <CardContent className="pt-6">
+        <div className="text-center py-8">
+          <AlertTriangle className="h-12 w-12 text-red-400 mx-auto mb-4" />
+          <p className="text-red-600 text-lg font-medium">
+            Error Loading Contacts
+          </p>
+          <p className="text-gray-500 text-sm mt-2">{errorMessage}</p>
+          <form action={handleRetry} className="mt-4">
+            <Button type="submit" variant="outline">
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Retry
+            </Button>
+          </form>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+async function AuthenticationError() {
+  async function handleReauth() {
+    "use server";
+    await clearAuthToken();
+    await startOAuth();
+  }
+
+  return (
+    <Card>
+      <CardContent className="pt-6">
+        <div className="text-center py-8">
+          <AlertTriangle className="h-12 w-12 text-yellow-400 mx-auto mb-4" />
+          <p className="text-yellow-600 text-lg font-medium">
+            Authentication Required
+          </p>
+          <p className="text-gray-500 text-sm mt-2">
+            Your session has expired. Please sign in again to access your
+            contacts.
+          </p>
+          <form action={handleReauth} className="mt-4">
+            <Button type="submit" variant="default">
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Sign In Again
+            </Button>
+          </form>
+        </div>
       </CardContent>
     </Card>
   );

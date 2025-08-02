@@ -30,12 +30,18 @@ export async function setBirthdays(options: {
   birthdays: people_v1.Schema$Birthday[];
   etag: string;
 }) {
-  const auth = await getAuthenticatedClient();
-  if (!auth) throw new Error("Not authenticated");
-  const people = google.people({ version: "v1", auth });
-
-  // Perform the deletion
   try {
+    const auth = await getAuthenticatedClient();
+    if (!auth) {
+      return {
+        success: false as const,
+        error: "Not authenticated - please sign in again",
+        requiresReauth: true,
+      };
+    }
+
+    const people = google.people({ version: "v1", auth });
+
     const updateResult = await people.people.updateContact({
       resourceName: options.resourceName,
       updatePersonFields: "birthdays",
@@ -52,11 +58,27 @@ export async function setBirthdays(options: {
     };
   } catch (error) {
     console.error("Error setting birthdays:", error);
+
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    const requiresReauth =
+      errorMessage.includes("refresh token") ||
+      errorMessage.includes("authentication") ||
+      errorMessage.includes("unauthorized") ||
+      errorMessage.includes("invalid_grant") ||
+      errorMessage.includes("401");
+
     return {
       success: false as const,
-      error: error instanceof Error ? error.message : "Unknown error",
+      error: errorMessage,
+      requiresReauth,
     };
   }
+}
+
+export async function handleReauth() {
+  await clearAuthToken();
+  await startOAuth();
 }
 
 export async function isAuthenticated() {
