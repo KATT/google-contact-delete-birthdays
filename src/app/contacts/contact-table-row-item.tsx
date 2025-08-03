@@ -227,6 +227,9 @@ export function ContactTableRow({ contact, index }: ContactTableRowProps) {
                     variant="outline"
                     size="sm"
                     className="gap-1 shadow-sm hover:shadow-md transition-all duration-200"
+                    onClick={() => {
+                      setDialogOpen(true);
+                    }}
                   >
                     <Edit3 className="h-3 w-3" />
                     Edit
