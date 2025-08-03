@@ -42,21 +42,6 @@ export function DeleteButton(props: {
     });
   };
 
-  const scrollToNextRow = () => {
-    // Find the closest tr parent element
-    const button = document.activeElement as HTMLElement;
-    if (button) {
-      const tr = button.closest("tr");
-      if (tr) {
-        const trHeight = tr.offsetHeight;
-        window.scrollBy({
-          top: trHeight,
-          behavior: "smooth",
-        });
-      }
-    }
-  };
-
   switch (state.type) {
     case "error":
       return (
@@ -65,7 +50,7 @@ export function DeleteButton(props: {
             <AlertTriangle className="h-4 w-4 inline mr-1" />
             Error
           </span>
-          {state.requiresReauth ? (
+          {state.requiresReauth && (
             <Button
               variant="outline"
               size="sm"
@@ -75,7 +60,6 @@ export function DeleteButton(props: {
                 });
               }}
               disabled={isPending}
-              className="text-primary hover:text-primary/80 hover:bg-primary/10"
               title={state.errorMessage}
             >
               {isPending ? (
@@ -87,29 +71,13 @@ export function DeleteButton(props: {
                 </>
               )}
             </Button>
-          ) : (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setState({
-                  type: "idle",
-                  etag: state.etag,
-                });
-              }}
-              className="text-muted-foreground hover:text-foreground hover:bg-muted"
-              title={state.errorMessage}
-            >
-              <RefreshCw className="h-4 w-4 mr-1" />
-              Retry
-            </Button>
           )}
         </div>
       );
 
     case "deleted":
       return (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 justify-end w-full">
           <span className="text-primary text-sm font-medium">✅ Cleared</span>
           <Button
             variant="outline"
@@ -133,13 +101,12 @@ export function DeleteButton(props: {
               });
             }}
             disabled={isPending}
-            className="text-primary hover:text-primary/80 hover:bg-primary/10"
           >
             {isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Loader2 className="animate-spin" />
             ) : (
               <>
-                <Undo2 className="h-4 w-4 mr-1" />
+                <Undo2 />
                 Undo
               </>
             )}
@@ -156,17 +123,19 @@ export function DeleteButton(props: {
             {
               // Find the closest tr parent element
               const button = event.currentTarget as HTMLElement;
-              console.log(button);
+
               if (button) {
                 const tr = button.closest("tr");
 
                 if (tr) {
                   const trHeight = tr.offsetHeight;
-                  console.log("scrolling by", trHeight);
-                  window.scrollBy({
-                    top: trHeight,
-                    behavior: "smooth",
-                  });
+
+                  setTimeout(() => {
+                    window.scrollBy({
+                      top: trHeight,
+                      behavior: "smooth",
+                    });
+                  }, 0);
                 }
               }
             }
@@ -188,13 +157,8 @@ export function DeleteButton(props: {
             });
           }}
           disabled={isPending}
-          className="text-muted-foreground hover:text-foreground hover:bg-muted"
         >
-          {isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin mr-2" />
-          ) : (
-            <X className="h-4 w-4 mr-2" />
-          )}
+          {isPending ? <Loader2 className="animate-spin" /> : <X />}
           {isPending ? "Clearing..." : "Clear Birthday"}
         </Button>
       );

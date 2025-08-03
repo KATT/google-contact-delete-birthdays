@@ -88,7 +88,7 @@ export default async function Home({ searchParams }: HomeProps) {
         <CardContent>
           <p className="text-muted-foreground leading-relaxed">
             Remember when Facebook automatically synced all your contacts with
-            their birthdays 15+ years ago? Now you're getting calendar
+            their birthdays 10+ years ago? Now you're getting calendar
             notifications for hundreds of random people you barely know. This
             tool helps you clean up that mess by selectively removing birthday
             data from your Google Contacts.
@@ -159,7 +159,7 @@ export default async function Home({ searchParams }: HomeProps) {
               <CheckCircle className="h-5 w-5" />
               You&apos;re already authenticated!
             </div>
-            <Button size="xxl" variant="default" asChild>
+            <Button size="xxl" asChild>
               <Link href="/contacts">View Your Contacts</Link>
             </Button>
           </div>
