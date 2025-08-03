@@ -73,21 +73,14 @@ export async function fetchAllContacts() {
     responses.push(response);
   } while (pageToken);
 
-  return responses;
-}
-
-export async function fetchContactsWithBirthdays() {
-  const responses = await fetchAllContacts();
-  const contacts = responses.map((it) => it.data.connections || []).flat();
-
-  return contacts
-    .filter((contact) => contact.birthdays?.filter((it) => it.date).length)
-    .map((contact) => {
-      const displayName = contact.names?.[0]?.displayName || "Unknown Contact";
+  return responses
+    .flatMap((it) => it.data.connections || [])
+    .map((it) => {
+      const displayName = it.names?.[0]?.displayName || "Unknown Contact";
       return {
-        ...contact,
+        ...it,
         displayName,
+        hasBirthday: it.birthdays?.some((it) => it.date),
       };
-    })
-    .sort((a, b) => a.displayName.localeCompare(b.displayName));
+    });
 }

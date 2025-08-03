@@ -16,11 +16,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { clearAuthToken, isAuthenticated, startOAuth } from "@/lib/actions";
-import { fetchContactsWithBirthdays } from "@/lib/google";
+import { fetchAllContacts } from "@/lib/google";
 import {
   AlertTriangle,
   ArrowLeft,
   Calendar,
+  Filter,
   RefreshCw,
   Trash2,
   Users,
@@ -30,10 +31,13 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { DeleteButton } from "./delete-button";
 
-async function ContactsList() {
+async function ContactsList(props: { showAll: boolean }) {
   let contacts;
   try {
-    contacts = await fetchContactsWithBirthdays();
+    contacts = await fetchAllContacts();
+    if (!props.showAll) {
+      contacts = contacts.filter((it) => it.hasBirthday);
+    }
   } catch (error) {
     console.warn("Error loading contacts:", error);
 
@@ -115,11 +119,13 @@ async function ContactsList() {
                     .join(", ")}
                 </TableCell>
                 <TableCell className="text-right">
-                  <DeleteButton
-                    resourceName={contact.resourceName!}
-                    etag={contact.etag!}
-                    birthdays={contact.birthdays || []}
-                  />
+                  {contact.hasBirthday && (
+                    <DeleteButton
+                      resourceName={contact.resourceName!}
+                      etag={contact.etag!}
+                      birthdays={contact.birthdays || []}
+                    />
+                  )}
                 </TableCell>
               </TableRow>
             ))}
@@ -204,12 +210,19 @@ async function LogoutButton() {
   );
 }
 
-export default async function ContactsPage() {
+export default async function ContactsPage(props: {
+  searchParams: Promise<{
+    showAll: string;
+  }>;
+}) {
   const authenticated = await isAuthenticated();
 
   if (!authenticated) {
     redirect("/");
   }
+
+  const { showAll } = await props.searchParams;
+  const isShowingAll = showAll === "1";
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
@@ -239,6 +252,17 @@ export default async function ContactsPage() {
         </AlertDescription>
       </Alert>
 
+      <div className="flex justify-between items-center mb-4">
+        <Link href={isShowingAll ? "/" : "/contacts?showAll=1"} prefetch>
+          <Button variant="outline" size="sm">
+            <Filter className="h-4 w-4 mr-2" />
+            {isShowingAll
+              ? "Show only Contacts with Birthdays"
+              : "Show All Contacts"}
+          </Button>
+        </Link>
+      </div>
+
       <Suspense
         fallback={
           <Card>
@@ -251,7 +275,7 @@ export default async function ContactsPage() {
           </Card>
         }
       >
-        <ContactsList />
+        <ContactsList showAll={isShowingAll} />
       </Suspense>
     </div>
   );
