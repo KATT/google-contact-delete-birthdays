@@ -15,6 +15,7 @@ import {
   Calendar,
   CheckCircle,
   Gift,
+  Github,
   Info,
   Shield,
   Sparkles,
@@ -222,7 +223,25 @@ export default async function Home({ searchParams }: HomeProps) {
         </div>
 
         {/* Footer */}
-        <div className="mt-20 text-center">
+        <div className="mt-20 text-center space-y-6">
+          <div className="flex justify-center">
+            <Button
+              variant="outline"
+              size="sm"
+              asChild
+              className="bg-card/50 backdrop-blur-sm border-border/50 hover:bg-card/80 transition-colors"
+            >
+              <a
+                href="https://github.com/KATT/google-contact-delete-birthdays"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2"
+              >
+                <Github className="h-4 w-4" />
+                View Source on GitHub
+              </a>
+            </Button>
+          </div>
           <p className="text-sm text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             This app requires access to your Google Contacts to function. You
             can revoke access at any time from your Google Account settings.
