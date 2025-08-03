@@ -1,3 +1,4 @@
+import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { WebApplication, WithContext } from "schema-dts";
@@ -156,6 +157,8 @@ export default function RootLayout({
         className={`${inter.className} font-sans antialiased bg-background text-foreground min-h-screen w-full selection:bg-primary/20 selection:text-primary-foreground`}
       >
         <main className="relative">{children}</main>
+
+        <GoogleAnalytics gaId="G-EB4554NYR8" />
 
         <script
           type="application/ld+json"
