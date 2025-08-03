@@ -295,14 +295,14 @@ async function AuthenticationError() {
 }
 
 async function LogoutButton() {
-  async function handleLogout() {
-    "use server";
-    await clearAuthToken();
-    redirect("/");
-  }
-
   return (
-    <form action={handleLogout}>
+    <form
+      action={async () => {
+        "use server";
+        await clearAuthToken();
+        redirect("/");
+      }}
+    >
       <Button
         variant="outline"
         size="sm"

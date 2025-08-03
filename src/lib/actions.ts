@@ -15,7 +15,7 @@ export async function setAuthToken(options: { token: string }) {
   cookieStore.set("google_token", options.token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "strict",
     maxAge: 60 * 60 * 24 * 7, // 7 days
   });
 }

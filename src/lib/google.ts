@@ -1,25 +1,13 @@
 import { google } from "googleapis";
 import { cookies } from "next/headers";
 
-// Configuration
-const SCOPES = ["https://www.googleapis.com/auth/contacts"];
-
 export function getOAuth2Client() {
-  // In a real app, these should be environment variables
-  const credentials = {
-    client_id: process.env.GOOGLE_CLIENT_ID,
-    client_secret: process.env.GOOGLE_CLIENT_SECRET,
-    redirect_uris: [
-      `${
-        process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000"
-      }/auth/callback`,
-    ],
-  };
-
   return new google.auth.OAuth2(
-    credentials.client_id,
-    credentials.client_secret,
-    credentials.redirect_uris[0]
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    `${
+      process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000"
+    }/auth/callback`
   );
 }
 
@@ -27,7 +15,7 @@ export function getAuthUrl() {
   const auth = getOAuth2Client();
   return auth.generateAuthUrl({
     access_type: "offline",
-    scope: SCOPES,
+    scope: ["https://www.googleapis.com/auth/contacts"],
   });
 }
 
