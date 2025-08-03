@@ -163,6 +163,7 @@ export function DeleteButton(props: {
         </Button>
       );
     default:
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const _exhaustiveCheck: never = state;
       throw new Error(`Unhandled status: ${state}`);
   }
