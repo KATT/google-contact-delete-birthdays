@@ -106,13 +106,13 @@ async function ContactsList(props: { showAll: boolean }) {
                 <TableCell>
                   {contact.birthdays
                     ?.filter((it) => !!it.date)
-                    .map((it, idx) => {
+                    .map((it) => {
                       const date = it.date!;
 
-                      let year = date.year ?? "????";
-                      let month =
+                      const year = date.year ?? "????";
+                      const month =
                         date.month?.toString().padStart(2, "0") ?? "??";
-                      let day = date.day?.toString().padStart(2, "0") ?? "??";
+                      const day = date.day?.toString().padStart(2, "0") ?? "??";
 
                       return `${year}-${month}-${day}`;
                     })
