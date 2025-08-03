@@ -1,5 +1,6 @@
 import { AuthError } from "@/components/auth-error";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Authed } from "@/components/ui/authed";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { isAuthenticated, startOAuth } from "@/lib/actions";
+import { startOAuth } from "@/lib/actions";
 import {
   Cake,
   Calendar,
@@ -69,69 +70,6 @@ export const metadata: Metadata = {
     canonical: "/",
   },
 };
-
-async function AuthCTA() {
-  const authenticated = await isAuthenticated();
-
-  return (
-    <div className="text-center space-y-8">
-      {authenticated ? (
-        <div className="space-y-8">
-          <div className="flex items-center justify-center gap-3 text-primary font-semibold text-lg">
-            <div className="p-2 rounded-full bg-primary/10">
-              <CheckCircle className="h-6 w-6" />
-            </div>
-            You&apos;re already authenticated!
-          </div>
-          <Button
-            size="lg"
-            asChild
-            className="h-14 px-12 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
-          >
-            <Link href="/contacts" className="flex items-center gap-3">
-              <Zap className="h-5 w-5" />
-              View Your Contacts
-            </Link>
-          </Button>
-        </div>
-      ) : (
-        <div className="space-y-8">
-          <div className="space-y-6">
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Ready to clean up your contacts? Sign in with Google to get
-              started.
-            </p>
-            <form action={startOAuth}>
-              <Button
-                size="lg"
-                variant="default"
-                className="h-14 px-12 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-1 rounded-full bg-primary-foreground/20">
-                    <Calendar className="h-5 w-5" />
-                  </div>
-                  Sign in with Google
-                </div>
-              </Button>
-            </form>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function AuthCTALoading() {
-  return (
-    <div className="text-center space-y-8">
-      <div className="space-y-6">
-        <Skeleton className="h-6 w-96 mx-auto" />
-        <Skeleton className="h-14 w-64 mx-auto rounded-lg" />
-      </div>
-    </div>
-  );
-}
 
 export default function Home() {
   return (
@@ -273,9 +211,62 @@ export default function Home() {
         <Separator className="my-12 bg-border/50" />
 
         {/* Call to Action */}
-        <Suspense fallback={<AuthCTALoading />}>
-          <AuthCTA />
-        </Suspense>
+        <div className="text-center space-y-8">
+          <Authed
+            authed={
+              <div className="space-y-8">
+                <div className="flex items-center justify-center gap-3 text-primary font-semibold text-lg">
+                  <div className="p-2 rounded-full bg-primary/10">
+                    <CheckCircle className="h-6 w-6" />
+                  </div>
+                  You&apos;re already authenticated!
+                </div>
+                <Button
+                  size="lg"
+                  asChild
+                  className="h-14 px-12 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
+                >
+                  <Link href="/contacts" className="flex items-center gap-3">
+                    <Zap className="h-5 w-5" />
+                    View Your Contacts
+                  </Link>
+                </Button>
+              </div>
+            }
+            unauthed={
+              <div className="space-y-8">
+                <div className="space-y-6">
+                  <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                    Ready to clean up your contacts? Sign in with Google to get
+                    started.
+                  </p>
+                  <form action={startOAuth}>
+                    <Button
+                      size="lg"
+                      variant="default"
+                      className="h-14 px-12 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="p-1 rounded-full bg-primary-foreground/20">
+                          <Calendar className="h-5 w-5" />
+                        </div>
+                        Sign in with Google
+                      </div>
+                    </Button>
+                  </form>
+                </div>
+              </div>
+            }
+            fallback={
+              <div className="text-center space-y-8">
+                <div className="space-y-6">
+                  <Skeleton className="h-6 w-96 mx-auto" />
+                  <Skeleton className="h-14 w-64 mx-auto rounded-lg" />
+                </div>
+              </div>
+            }
+          />
+        </div>
 
         {/* Footer */}
         <div className="mt-20 text-center space-y-6">
