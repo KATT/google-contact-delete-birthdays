@@ -6,45 +6,62 @@ import type { people_v1 } from "googleapis";
 import { AlertTriangle, Loader2, RefreshCw, Undo2, X } from "lucide-react";
 import { useState, useTransition } from "react";
 
-type DeleteState = "idle" | "deleted" | "error";
+type State =
+  | {
+      type: "idle";
+      etag: string;
+    }
+  | {
+      type: "deleted";
+      etag: string;
+    }
+  | {
+      type: "error";
+      etag: string;
+      errorMessage: string;
+      requiresReauth: boolean;
+    };
 
 export function DeleteButton(props: {
   resourceName: string;
   etag: string;
   birthdays: people_v1.Schema$Birthday[];
 }) {
-  const [state, setState] = useState<DeleteState>("idle");
-  const [etag, setEtag] = useState(props.etag);
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [requiresReauth, setRequiresReauth] = useState(false);
+  const [state, setState] = useState<State>({
+    type: "idle",
+    etag: props.etag,
+  });
   const [isPending, startTransition] = useTransition();
 
   const handleError = (error: string, needsReauth: boolean = false) => {
-    setErrorMessage(error);
-    setRequiresReauth(needsReauth);
-    setState("error");
+    setState({
+      type: "error",
+      etag: state.etag,
+      errorMessage: error,
+      requiresReauth: needsReauth,
+    });
   };
 
-  switch (state) {
+  switch (state.type) {
     case "error":
       return (
         <div className="flex items-center gap-2">
-          <span className="text-red-600 text-sm font-medium">
+          <span className="text-destructive text-sm font-medium">
             <AlertTriangle className="h-4 w-4 inline mr-1" />
             Error
           </span>
-          {requiresReauth ? (
+          {state.requiresReauth ? (
             <Button
               variant="outline"
               size="sm"
-              onClick={() => {
+              onClick={async () => {
                 startTransition(async () => {
                   await handleReauth();
                 });
               }}
               disabled={isPending}
-              className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-              title={errorMessage}
+              className="text-primary hover:text-primary/80 hover:bg-primary/10"
+              title={state.errorMessage}
             >
               {isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -59,9 +76,14 @@ export function DeleteButton(props: {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setState("idle")}
-              className="text-gray-600 hover:text-gray-700 hover:bg-gray-50"
-              title={errorMessage}
+              onClick={() => {
+                setState({
+                  type: "idle",
+                  etag: state.etag,
+                });
+              }}
+              className="text-muted-foreground hover:text-foreground hover:bg-muted"
+              title={state.errorMessage}
             >
               <RefreshCw className="h-4 w-4 mr-1" />
               Retry
@@ -73,29 +95,30 @@ export function DeleteButton(props: {
     case "deleted":
       return (
         <div className="flex items-center gap-2">
-          <span className="text-green-600 text-sm font-medium">✅ Cleared</span>
+          <span className="text-primary text-sm font-medium">✅ Cleared</span>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => {
+            onClick={async () => {
               startTransition(async () => {
                 const result = await setBirthdays({
                   resourceName: props.resourceName,
                   birthdays: props.birthdays,
-                  etag,
+                  etag: state.etag,
                 });
-                startTransition(() => {
-                  if (result.success) {
-                    setState("idle");
-                    setEtag(result.etag!);
-                  } else {
-                    handleError(result.error, result.requiresReauth);
-                  }
-                });
+
+                if (result.success) {
+                  setState({
+                    type: "idle",
+                    etag: result.etag!,
+                  });
+                } else {
+                  handleError(result.error, result.requiresReauth);
+                }
               });
             }}
             disabled={isPending}
-            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+            className="text-primary hover:text-primary/80 hover:bg-primary/10"
           >
             {isPending ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -110,30 +133,30 @@ export function DeleteButton(props: {
       );
 
     case "idle":
-    default:
       return (
         <Button
           variant="outline"
           size="sm"
-          onClick={() => {
+          onClick={async () => {
             startTransition(async () => {
               const result = await setBirthdays({
                 resourceName: props.resourceName,
                 birthdays: [],
-                etag,
+                etag: state.etag,
               });
-              startTransition(() => {
-                if (result.success) {
-                  setState("deleted");
-                  setEtag(result.etag!);
-                } else {
-                  handleError(result.error, result.requiresReauth);
-                }
-              });
+
+              if (result.success) {
+                setState({
+                  type: "deleted",
+                  etag: result.etag!,
+                });
+              } else {
+                handleError(result.error, result.requiresReauth);
+              }
             });
           }}
           disabled={isPending}
-          className="text-gray-600 hover:text-gray-700 hover:bg-gray-50"
+          className="text-muted-foreground hover:text-foreground hover:bg-muted"
         >
           {isPending ? (
             <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -143,5 +166,8 @@ export function DeleteButton(props: {
           {isPending ? "Clearing..." : "Clear Birthday"}
         </Button>
       );
+    default:
+      const _exhaustiveCheck: never = state;
+      throw new Error(`Unhandled status: ${state}`);
   }
 }

@@ -228,12 +228,12 @@ export default async function ContactsPage(props: {
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center gap-4">
-          <Link href="/">
-            <Button variant="outline" size="sm">
+          <Button asChild variant="outline" size="sm">
+            <Link href="/">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Home
-            </Button>
-          </Link>
+            </Link>
+          </Button>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Your Contacts</h1>
             <p className="text-gray-600">
@@ -253,17 +253,22 @@ export default async function ContactsPage(props: {
       </Alert>
 
       <div className="flex justify-between items-center mb-4">
-        <Link
-          href={isShowingAll ? "/contacts" : "/contacts?showAll=1"}
-          prefetch
+        <Button
+          asChild
+          variant="secondary"
+          size="sm"
+          className="cursor-pointer"
         >
-          <Button variant="outline" size="sm">
+          <Link
+            href={isShowingAll ? "/contacts" : "/contacts?showAll=1"}
+            prefetch
+          >
             <Filter className="h-4 w-4 mr-2" />
             {isShowingAll
               ? "Show only Contacts with Birthdays"
               : "Show All Contacts"}
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
 
       <Suspense
