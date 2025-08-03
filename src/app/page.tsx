@@ -134,7 +134,9 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <div className="container mx-auto px-4 py-12 max-w-6xl">
-        <AuthError />
+        <Suspense fallback={null}>
+          <AuthError />
+        </Suspense>
 
         {/* Hero Section */}
         <div className="text-center mb-20">
