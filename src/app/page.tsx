@@ -11,12 +11,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import { startOAuth } from "@/lib/actions";
 import {
   Cake,
   Calendar,
-  CheckCircle,
   Gift,
   Github,
   Info,
@@ -24,7 +21,6 @@ import {
   Sparkles,
   Trash2,
   Users,
-  Zap,
 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -70,6 +66,36 @@ export const metadata: Metadata = {
     canonical: "/",
   },
 };
+
+function ConnectButton() {
+  const render = (variant: "authed" | "unauthed") => (
+    <Button
+      asChild
+      size="xxl"
+      className="shadow-lg px-8 py-5 text-lg font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200"
+    >
+      {variant === "authed" ? (
+        <Link href="/contacts" prefetch>
+          <Calendar className="h-5 w-5" />
+          {variant === "authed" ? "View Your Contacts" : "Sign in with Google"}
+        </Link>
+      ) : (
+        <a href="/auth/login">
+          <Calendar className="h-5 w-5" />
+          Sign in with Google
+        </a>
+      )}
+    </Button>
+  );
+
+  return (
+    <Authed
+      authed={render("authed")}
+      unauthed={render("unauthed")}
+      fallback={render("unauthed")}
+    />
+  );
+}
 
 export default function Home() {
   return (
@@ -119,6 +145,9 @@ export default function Home() {
                 <Sparkles className="h-4 w-4 mr-2" />
                 Easy to use
               </Badge>
+            </div>
+            <div className="flex flex-col sm:flex-row justify-center gap-4 pt-6">
+              <ConnectButton />
             </div>
           </div>
         </div>
@@ -211,61 +240,14 @@ export default function Home() {
         <Separator className="my-12 bg-border/50" />
 
         {/* Call to Action */}
-        <div className="text-center space-y-8">
-          <Authed
-            authed={
-              <div className="space-y-8">
-                <div className="flex items-center justify-center gap-3 text-primary font-semibold text-lg">
-                  <div className="p-2 rounded-full bg-primary/10">
-                    <CheckCircle className="h-6 w-6" />
-                  </div>
-                  You&apos;re already authenticated!
-                </div>
-                <Button
-                  size="lg"
-                  asChild
-                  className="h-14 px-12 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
-                >
-                  <Link href="/contacts" className="flex items-center gap-3">
-                    <Zap className="h-5 w-5" />
-                    View Your Contacts
-                  </Link>
-                </Button>
-              </div>
-            }
-            unauthed={
-              <div className="space-y-8">
-                <div className="space-y-6">
-                  <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                    Ready to clean up your contacts? Sign in with Google to get
-                    started.
-                  </p>
-                  <form action={startOAuth}>
-                    <Button
-                      size="lg"
-                      variant="default"
-                      className="h-14 px-12 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="p-1 rounded-full bg-primary-foreground/20">
-                          <Calendar className="h-5 w-5" />
-                        </div>
-                        Sign in with Google
-                      </div>
-                    </Button>
-                  </form>
-                </div>
-              </div>
-            }
-            fallback={
-              <div className="text-center space-y-8">
-                <div className="space-y-6">
-                  <Skeleton className="h-6 w-96 mx-auto" />
-                  <Skeleton className="h-14 w-64 mx-auto rounded-lg" />
-                </div>
-              </div>
-            }
-          />
+        <div className="space-y-8 text-center">
+          <div className="space-y-6">
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Ready to clean up your contacts? Sign in with Google to get
+              started.
+            </p>
+            <ConnectButton />
+          </div>
         </div>
 
         {/* Footer */}
