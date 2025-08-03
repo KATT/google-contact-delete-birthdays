@@ -125,7 +125,7 @@ export function ContactTableRow({ contact, index }: ContactTableRowProps) {
         index % 2 === 0 ? "bg-card" : "bg-muted/10"
       }`}
     >
-      <TableCell className="font-medium py-4">
+      <TableCell className="font-medium py-4 w-0">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-full bg-primary/10">
             <User className="h-4 w-4 text-primary" />
@@ -133,7 +133,7 @@ export function ContactTableRow({ contact, index }: ContactTableRowProps) {
           <span className="text-foreground">{contact.displayName}</span>
         </div>
       </TableCell>
-      <TableCell className="py-4">
+      <TableCell className="py-4 w-0">
         {hasBirthday ? (
           <div className="font-mono text-sm bg-muted/30 px-3 py-1 rounded-md inline-block">
             {formatBirthdayDisplay(currentBirthdays)}
@@ -142,7 +142,7 @@ export function ContactTableRow({ contact, index }: ContactTableRowProps) {
           <span className="text-muted-foreground text-sm">No birthday set</span>
         )}
       </TableCell>
-      <TableCell className="text-right py-4">
+      <TableCell className="text-right py-4 w-full">
         <div className="flex items-center justify-end ml-auto">
           {state.type === "error" && (
             <div className="flex items-center gap-2">
