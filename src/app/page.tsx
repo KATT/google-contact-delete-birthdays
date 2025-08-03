@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { isAuthenticated, startOAuth } from "@/lib/actions";
 import {
+  Cake,
   Calendar,
   CheckCircle,
   Gift,
@@ -29,38 +30,40 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Google Contacts Birthday Manager - Remove Contact Birthdays",
+  title: "Google Contacts Birthday Manager - Manage Contact Birthdays",
   description:
-    "Simple tool to remove birthday info from your Google Contacts. Useful for cleaning up old Facebook syncs.",
+    "Simple tool to add, edit, or remove birthday info from your Google Contacts. Keep your calendar notifications organized.",
   keywords: [
-    "Google Contacts cleanup",
+    "Google Contacts management",
     "birthday notifications",
-    "Facebook sync removal",
-    "contact management tool",
+    "contact birthday manager",
+    "add birthday information",
+    "edit contact birthdays",
+    "Facebook sync cleanup",
     "Google OAuth",
     "privacy-focused",
-    "contact birthday manager",
+    "contact management tool",
   ],
   openGraph: {
-    title: "Google Contacts Birthday Manager - Remove Contact Birthdays",
+    title: "Google Contacts Birthday Manager - Manage Contact Birthdays",
     description:
-      "Simple tool to remove birthday info from your Google Contacts.",
+      "Simple tool to add, edit, or remove birthday info from your Google Contacts.",
     type: "website",
     locale: "en_US",
     images: [
       {
-        url: "/api/og?title=Google%20Contacts%20Birthday%20Manager&description=Remove%20birthday%20info%20from%20contacts",
+        url: "/api/og?title=Google%20Contacts%20Birthday%20Manager&description=Manage%20birthday%20info%20in%20contacts",
         width: 1200,
         height: 630,
-        alt: "Google Contacts Birthday Manager - Remove contact birthdays",
+        alt: "Google Contacts Birthday Manager - Manage contact birthdays",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Google Contacts Birthday Manager - Remove Contact Birthdays",
+    title: "Google Contacts Birthday Manager - Manage Contact Birthdays",
     description:
-      "Simple tool to remove birthday info from your Google Contacts.",
+      "Simple tool to add, edit, or remove birthday info from your Google Contacts.",
   },
   alternates: {
     canonical: "/",
@@ -153,8 +156,8 @@ export default function Home() {
               <span className="text-primary">Birthday Manager</span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Remove birthday info from your Google Contacts. Useful for
-              cleaning up old Facebook syncs and unwanted notifications.
+              Manage birthday information in your Google Contacts. Add, edit, or
+              remove birthdays to keep your calendar notifications organized.
             </p>
             <div className="flex justify-center gap-3 pt-4">
               <Badge
@@ -196,15 +199,15 @@ export default function Home() {
             <p className="text-muted-foreground leading-relaxed text-lg">
               Remember when Facebook synced all your contacts with birthdays
               years ago? Now you get calendar notifications for random people
-              you barely know. This tool lets you remove birthday info from
-              specific contacts so you only get notifications for people you
-              actually care about.
+              you barely know. This tool lets you manage birthday information -
+              add birthdays for important people, edit existing ones, or remove
+              them from contacts you don&apos;t want notifications for.
             </p>
           </CardContent>
         </Card>
 
         {/* Features Grid */}
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           <Card className="group hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1 border border-border/50 bg-card/50 backdrop-blur-sm">
             <CardHeader className="pb-6">
               <div className="p-4 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 w-fit mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -226,6 +229,19 @@ export default function Home() {
               <CardDescription className="text-base leading-relaxed">
                 Delete birthday info from contacts you don&apos;t want
                 notifications for
+              </CardDescription>
+            </CardHeader>
+          </Card>
+
+          <Card className="group hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 hover:-translate-y-1 border border-border/50 bg-card/50 backdrop-blur-sm">
+            <CardHeader className="pb-6">
+              <div className="p-4 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 w-fit mb-6 group-hover:scale-110 transition-transform duration-300">
+                <Cake className="h-8 w-8 text-primary" />
+              </div>
+              <CardTitle className="text-xl">Add & Edit Birthdays</CardTitle>
+              <CardDescription className="text-base leading-relaxed">
+                Add birthday information for important contacts or edit existing
+                birthdays
               </CardDescription>
             </CardHeader>
           </Card>

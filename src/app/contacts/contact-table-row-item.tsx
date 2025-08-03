@@ -9,7 +9,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
@@ -29,7 +28,6 @@ import {
   CheckCircle,
   Edit3,
   Loader2,
-  Plus,
   RefreshCw,
   Undo2,
   User,
@@ -145,7 +143,7 @@ export function ContactTableRow({ contact, index }: ContactTableRowProps) {
         )}
       </TableCell>
       <TableCell className="text-right py-4">
-        <div className="flex items-center justify-end w-[280px] min-h-[32px] ml-auto">
+        <div className="flex items-center justify-end ml-auto">
           {state.type === "error" && (
             <div className="flex items-center gap-2">
               <Badge variant="destructive" className="gap-1 px-2 py-1">
@@ -223,52 +221,81 @@ export function ContactTableRow({ contact, index }: ContactTableRowProps) {
 
           {state.type === "idle" && (
             <div className="flex items-center gap-2">
-              {hasBirthday && (
+              {hasBirthday ? (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-1 shadow-sm hover:shadow-md transition-all duration-200"
+                  >
+                    <Edit3 className="h-3 w-3" />
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(event) => {
+                      const trHeight =
+                        event.currentTarget.closest("tr")?.clientHeight;
+
+                      if (trHeight) {
+                        setTimeout(() => {
+                          window.scrollBy({
+                            top: trHeight,
+                            behavior: "smooth",
+                          });
+                        }, 0);
+                      }
+                      startTransition(async () => {
+                        // Store the current birthday before clearing
+                        const birthdayToStore = currentBirthdays;
+
+                        const result = await setBirthdays({
+                          resourceName: contact.resourceName,
+                          birthdays: [],
+                          etag: state.etag,
+                        });
+
+                        if (result.success) {
+                          setState({ type: "deleted", etag: result.etag! });
+                          setCurrentBirthdays([]);
+                          setLastKnownBirthdays(birthdayToStore);
+
+                          // Track event
+                          if (typeof gtag !== "undefined") {
+                            gtag("event", "clear_birthday", {
+                              event_category: "user_action",
+                              event_label: "birthday_cleared",
+                            });
+                          }
+                        } else {
+                          handleError(result.error, result.requiresReauth);
+                        }
+                      });
+                    }}
+                    disabled={isPending}
+                    className="gap-1 shadow-sm hover:shadow-md transition-all duration-200"
+                  >
+                    {isPending ? (
+                      <>
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                        Clearing...
+                      </>
+                    ) : (
+                      <>
+                        <X className="h-3 w-3" />
+                        Clear
+                      </>
+                    )}
+                  </Button>
+                </>
+              ) : (
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => {
-                    startTransition(async () => {
-                      // Store the current birthday before clearing
-                      const birthdayToStore = currentBirthdays;
-
-                      const result = await setBirthdays({
-                        resourceName: contact.resourceName,
-                        birthdays: [],
-                        etag: state.etag,
-                      });
-
-                      if (result.success) {
-                        setState({ type: "deleted", etag: result.etag! });
-                        setCurrentBirthdays([]);
-                        setLastKnownBirthdays(birthdayToStore);
-
-                        // Track event
-                        if (typeof gtag !== "undefined") {
-                          gtag("event", "clear_birthday", {
-                            event_category: "user_action",
-                            event_label: "birthday_cleared",
-                          });
-                        }
-                      } else {
-                        handleError(result.error, result.requiresReauth);
-                      }
-                    });
-                  }}
-                  disabled={isPending}
-                  className="gap-1 shadow-sm hover:shadow-md transition-all duration-200"
+                  onClick={() => setDialogOpen(true)}
                 >
-                  {isPending ? (
-                    <>
-                      <Loader2 className="h-3 w-3 animate-spin" />
-                      Clearing...
-                    </>
-                  ) : (
-                    <>
-                      <X className="h-3 w-3" />
-                      Clear
-                    </>
-                  )}
+                  Add Birthday
                 </Button>
               )}
             </div>
@@ -280,25 +307,6 @@ export function ContactTableRow({ contact, index }: ContactTableRowProps) {
             setDialogOpen(newOpen);
           }}
         >
-          <DialogTrigger asChild>
-            <Button
-              variant={hasBirthday ? "outline" : "default"}
-              size="sm"
-              className="gap-1 shadow-sm hover:shadow-md transition-all duration-200"
-            >
-              {hasBirthday ? (
-                <>
-                  <Edit3 className="h-3 w-3" />
-                  Edit
-                </>
-              ) : (
-                <>
-                  <Plus className="h-3 w-3" />
-                  Add Birthday
-                </>
-              )}
-            </Button>
-          </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
@@ -435,6 +443,7 @@ export function ContactTableRow({ contact, index }: ContactTableRowProps) {
                 type="submit"
                 disabled={isDialogPending}
                 className="gap-2"
+                onClick={() => setDialogOpen(false)}
               >
                 {isDialogPending ? (
                   <>
