@@ -38,9 +38,6 @@ export const metadata: Metadata = {
   title: "Manage Contact Birthdays - Google Contacts Birthday Manager",
 };
 
-// Disable caching for this page
-export const dynamic = "force-dynamic";
-
 async function ContactsList(props: { showAll: boolean }) {
   let contacts;
   try {
