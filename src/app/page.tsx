@@ -171,7 +171,7 @@ export default async function Home({ searchParams }: HomeProps) {
                 get started.
               </p>
               <form action={startOAuth}>
-                <Button size="xxl" variant="default" className="cursor-pointer">
+                <Button size="xxl" variant="default">
                   Connect Google Account
                 </Button>
               </form>

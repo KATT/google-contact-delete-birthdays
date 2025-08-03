@@ -1,4 +1,3 @@
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,7 +22,6 @@ import {
   Calendar,
   Filter,
   RefreshCw,
-  Trash2,
   Users,
 } from "lucide-react";
 import Link from "next/link";
@@ -228,7 +226,7 @@ export default async function ContactsPage(props: {
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center gap-4">
-          <Button asChild variant="outline" size="sm">
+          <Button asChild variant="outline">
             <Link href="/">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Home
@@ -244,21 +242,8 @@ export default async function ContactsPage(props: {
         <LogoutButton />
       </div>
 
-      <Alert className="mb-6">
-        <Trash2 className="h-4 w-4" />
-        <AlertDescription>
-          <strong>Note:</strong> Deleting birthday information is permanent.
-          Make sure you want to remove this data before proceeding.
-        </AlertDescription>
-      </Alert>
-
       <div className="flex justify-between items-center mb-4">
-        <Button
-          asChild
-          variant="secondary"
-          size="sm"
-          className="cursor-pointer"
-        >
+        <Button asChild variant="secondary">
           <Link
             href={isShowingAll ? "/contacts" : "/contacts?showAll=1"}
             prefetch

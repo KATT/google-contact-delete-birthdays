@@ -82,5 +82,6 @@ export async function fetchAllContacts() {
         displayName,
         hasBirthday: it.birthdays?.some((it) => it.date),
       };
-    });
+    })
+    .sort((a, b) => a.displayName.localeCompare(b.displayName));
 }

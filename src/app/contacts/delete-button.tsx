@@ -42,6 +42,21 @@ export function DeleteButton(props: {
     });
   };
 
+  const scrollToNextRow = () => {
+    // Find the closest tr parent element
+    const button = document.activeElement as HTMLElement;
+    if (button) {
+      const tr = button.closest("tr");
+      if (tr) {
+        const trHeight = tr.offsetHeight;
+        window.scrollBy({
+          top: trHeight,
+          behavior: "smooth",
+        });
+      }
+    }
+  };
+
   switch (state.type) {
     case "error":
       return (
@@ -54,7 +69,7 @@ export function DeleteButton(props: {
             <Button
               variant="outline"
               size="sm"
-              onClick={async () => {
+              onClick={() => {
                 startTransition(async () => {
                   await handleReauth();
                 });
@@ -99,7 +114,7 @@ export function DeleteButton(props: {
           <Button
             variant="outline"
             size="sm"
-            onClick={async () => {
+            onClick={() => {
               startTransition(async () => {
                 const result = await setBirthdays({
                   resourceName: props.resourceName,
@@ -137,7 +152,24 @@ export function DeleteButton(props: {
         <Button
           variant="outline"
           size="sm"
-          onClick={async () => {
+          onClick={(event) => {
+            {
+              // Find the closest tr parent element
+              const button = event.currentTarget as HTMLElement;
+              console.log(button);
+              if (button) {
+                const tr = button.closest("tr");
+
+                if (tr) {
+                  const trHeight = tr.offsetHeight;
+                  console.log("scrolling by", trHeight);
+                  window.scrollBy({
+                    top: trHeight,
+                    behavior: "smooth",
+                  });
+                }
+              }
+            }
             startTransition(async () => {
               const result = await setBirthdays({
                 resourceName: props.resourceName,
