@@ -27,7 +27,6 @@ export const metadata: Metadata = {
   applicationName: "Google Contacts Birthday Manager",
   generator: "Next.js",
   category: "productivity",
-  classification: "Business",
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
   ),

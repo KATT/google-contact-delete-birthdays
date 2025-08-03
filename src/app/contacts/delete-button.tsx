@@ -14,6 +14,11 @@ import {
 } from "lucide-react";
 import { useState, useTransition } from "react";
 
+// Declare gtag function for TypeScript
+declare global {
+  function gtag(...args: any[]): void;
+}
+
 type State =
   | {
       type: "idle";
@@ -110,6 +115,14 @@ export function DeleteButton(props: {
                     type: "idle",
                     etag: result.etag!,
                   });
+
+                  // Track undo clear event
+                  if (typeof gtag !== "undefined") {
+                    gtag("event", "undo_clear_birthday", {
+                      event_category: "user_action",
+                      event_label: "birthday_undo",
+                    });
+                  }
                 } else {
                   handleError(result.error, result.requiresReauth);
                 }
@@ -167,6 +180,14 @@ export function DeleteButton(props: {
                   type: "deleted",
                   etag: result.etag!,
                 });
+
+                // Track birthday clear event
+                if (typeof gtag !== "undefined") {
+                  gtag("event", "clear_birthday", {
+                    event_category: "user_action",
+                    event_label: "birthday_cleared",
+                  });
+                }
               } else {
                 handleError(result.error, result.requiresReauth);
               }
