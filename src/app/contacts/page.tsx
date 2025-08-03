@@ -125,7 +125,7 @@ async function ContactsList(props: { showAll: boolean }) {
               {contacts.map((contact, index) => (
                 <TableRow
                   key={contact.resourceName}
-                  className={`transition-colors hover:bg-muted/30 ${
+                  className={`transition-colors hover:bg-primary/5 ${
                     index % 2 === 0 ? "bg-card" : "bg-muted/10"
                   }`}
                 >
