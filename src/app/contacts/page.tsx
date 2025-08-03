@@ -26,14 +26,13 @@ import {
   EyeOff,
   LogOut,
   RefreshCw,
-  User,
   Users,
 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import { DeleteButton } from "./delete-button";
+import { ContactTableRow } from "./contact-table-row-item";
 
 export const metadata: Metadata = {
   title: "Manage Contact Birthdays - Google Contacts Birthday Manager",
@@ -77,11 +76,14 @@ async function ContactsList(props: { showAll: boolean }) {
               </div>
             </div>
             <h3 className="text-xl font-semibold text-foreground mb-2">
-              No contacts with birthdays found
+              {props.showAll
+                ? "No contacts found"
+                : "No contacts with birthdays found"}
             </h3>
             <p className="text-muted-foreground text-base max-w-md mx-auto leading-relaxed">
-              All your contacts either don&apos;t have birthday information or
-              it has already been removed.
+              {props.showAll
+                ? "No contacts were found in your Google account."
+                : "All your contacts either don't have birthday information or it has already been removed."}
             </p>
           </div>
         </CardContent>
@@ -98,11 +100,12 @@ async function ContactsList(props: { showAll: boolean }) {
               <div className="p-2 rounded-lg bg-primary/10">
                 <Calendar className="h-6 w-6 text-primary" />
               </div>
-              Contacts with Birthdays
+              {props.showAll ? "All Contacts" : "Contacts with Birthdays"}
             </CardTitle>
             <CardDescription className="text-base mt-2">
-              Click the clear button to remove birthday information from a
-              contact
+              {props.showAll
+                ? "Add birthday information or edit existing birthdays for your contacts"
+                : "Click the clear button to remove birthday information from a contact"}
             </CardDescription>
           </div>
           <Badge variant="secondary" className="px-3 py-1 text-sm font-medium">
@@ -128,50 +131,16 @@ async function ContactsList(props: { showAll: boolean }) {
             </TableHeader>
             <TableBody>
               {contacts.map((contact, index) => (
-                <TableRow
+                <ContactTableRow
                   key={contact.resourceName}
-                  className={`transition-colors hover:bg-primary/5 ${
-                    index % 2 === 0 ? "bg-card" : "bg-muted/10"
-                  }`}
-                >
-                  <TableCell className="font-medium py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-full bg-primary/10">
-                        <User className="h-4 w-4 text-primary" />
-                      </div>
-                      <span className="text-foreground">
-                        {contact.displayName}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="py-4">
-                    <div className="font-mono text-sm bg-muted/30 px-3 py-1 rounded-md inline-block">
-                      {contact.birthdays
-                        ?.filter((it) => !!it.date)
-                        .map((it) => {
-                          const date = it.date!;
-
-                          const year = date.year ?? "????";
-                          const month =
-                            date.month?.toString().padStart(2, "0") ?? "??";
-                          const day =
-                            date.day?.toString().padStart(2, "0") ?? "??";
-
-                          return `${year}-${month}-${day}`;
-                        })
-                        .join(", ")}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right py-4">
-                    {contact.hasBirthday && (
-                      <DeleteButton
-                        resourceName={contact.resourceName!}
-                        etag={contact.etag!}
-                        birthdays={contact.birthdays || []}
-                      />
-                    )}
-                  </TableCell>
-                </TableRow>
+                  contact={{
+                    resourceName: contact.resourceName!,
+                    etag: contact.etag!,
+                    displayName: contact.displayName,
+                    birthdays: contact.birthdays,
+                  }}
+                  index={index}
+                />
               ))}
             </TableBody>
           </Table>
