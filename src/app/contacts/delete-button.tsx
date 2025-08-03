@@ -32,7 +32,7 @@ type State =
       type: "error";
       etag: string;
       errorMessage: string;
-      requiresReauth: boolean;
+      needsReauth: boolean;
     };
 
 export function DeleteButton(props: {
@@ -46,12 +46,12 @@ export function DeleteButton(props: {
   });
   const [isPending, startTransition] = useTransition();
 
-  const handleError = (error: string, needsReauth: boolean = false) => {
+  const handleError = (options: { error: string; needsReauth: boolean }) => {
     setState({
       type: "error",
       etag: state.etag,
-      errorMessage: error,
-      requiresReauth: needsReauth,
+      errorMessage: options.error,
+      needsReauth: options.needsReauth,
     });
   };
 
@@ -67,7 +67,7 @@ export function DeleteButton(props: {
                   <AlertCircle className="h-3 w-3" />
                   Error
                 </Badge>
-                {state.requiresReauth && (
+                {state.needsReauth && (
                   <Button
                     variant="outline"
                     size="sm"
@@ -128,7 +128,10 @@ export function DeleteButton(props: {
                           });
                         }
                       } else {
-                        handleError(result.error, result.requiresReauth);
+                        handleError({
+                          error: result.error,
+                          needsReauth: result.requiresReauth,
+                        });
                       }
                     });
                   }}
@@ -174,7 +177,10 @@ export function DeleteButton(props: {
                         });
                       }
                     } else {
-                      handleError(result.error, result.requiresReauth);
+                      handleError({
+                        error: result.error,
+                        needsReauth: result.requiresReauth,
+                      });
                     }
                   });
                 }}
