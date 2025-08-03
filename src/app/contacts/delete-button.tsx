@@ -155,7 +155,20 @@ export function DeleteButton(props: {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => {
+                onClick={(event) => {
+                  {
+                    // Jump to the next row
+                    const scrollHeight =
+                      event.currentTarget.closest("tr")?.scrollHeight;
+                    if (scrollHeight) {
+                      setTimeout(() => {
+                        window.scrollBy({
+                          top: scrollHeight,
+                          behavior: "smooth",
+                        });
+                      }, 0);
+                    }
+                  }
                   startTransition(async () => {
                     const result = await setBirthdays({
                       resourceName: props.resourceName,
