@@ -10,7 +10,9 @@ export function getOAuth2Client() {
     client_id: process.env.GOOGLE_CLIENT_ID,
     client_secret: process.env.GOOGLE_CLIENT_SECRET,
     redirect_uris: [
-      `${process.env.APP_URL ?? "http://localhost:3000"}/auth/callback`,
+      `${
+        process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000"
+      }/auth/callback`,
     ],
   };
 

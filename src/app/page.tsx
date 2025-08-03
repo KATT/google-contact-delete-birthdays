@@ -23,7 +23,47 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Google Contacts Birthday Manager - Clean Up Contact Birthdays",
+  description:
+    "Free tool to clean up unwanted birthday notifications from old Facebook syncs in your Google Contacts. Secure, privacy-focused, and easy to use.",
+  keywords: [
+    "Google Contacts cleanup",
+    "birthday notifications",
+    "Facebook sync removal",
+    "contact management tool",
+    "Google OAuth",
+    "privacy-focused",
+    "contact birthday manager",
+  ],
+  openGraph: {
+    title: "Google Contacts Birthday Manager - Clean Up Contact Birthdays",
+    description:
+      "Free tool to clean up unwanted birthday notifications from old Facebook syncs in your Google Contacts. Secure, privacy-focused, and easy to use.",
+    type: "website",
+    locale: "en_US",
+    images: [
+      {
+        url: "/api/og?title=Google%20Contacts%20Birthday%20Manager&description=Free%20tool%20to%20clean%20up%20unwanted%20birthday%20notifications",
+        width: 1200,
+        height: 630,
+        alt: "Google Contacts Birthday Manager - Clean up your contact birthdays",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Google Contacts Birthday Manager - Clean Up Contact Birthdays",
+    description:
+      "Free tool to clean up unwanted birthday notifications from old Facebook syncs in your Google Contacts.",
+  },
+  alternates: {
+    canonical: "/",
+  },
+};
 
 interface HomeProps {
   searchParams: Promise<{

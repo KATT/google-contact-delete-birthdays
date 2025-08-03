@@ -29,10 +29,52 @@ import {
   User,
   Users,
 } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { DeleteButton } from "./delete-button";
+
+export const metadata: Metadata = {
+  title: "Manage Contact Birthdays - Google Contacts Birthday Manager",
+  description:
+    "View and manage birthday information for your Google Contacts. Remove unwanted birthday notifications with one click. Secure and private.",
+  keywords: [
+    "contact birthday management",
+    "Google Contacts birthdays",
+    "remove birthday notifications",
+    "contact cleanup",
+    "birthday data removal",
+  ],
+  openGraph: {
+    title: "Manage Contact Birthdays - Google Contacts Birthday Manager",
+    description:
+      "View and manage birthday information for your Google Contacts. Remove unwanted birthday notifications with one click.",
+    type: "website",
+    locale: "en_US",
+    images: [
+      {
+        url: "/api/og?title=Manage%20Contact%20Birthdays&description=View%20and%20manage%20birthday%20information%20for%20your%20Google%20Contacts",
+        width: 1200,
+        height: 630,
+        alt: "Manage Contact Birthdays - Google Contacts Birthday Manager",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Manage Contact Birthdays - Google Contacts Birthday Manager",
+    description:
+      "View and manage birthday information for your Google Contacts. Remove unwanted birthday notifications with one click.",
+  },
+  robots: {
+    index: false, // This page requires authentication
+    follow: true,
+  },
+  alternates: {
+    canonical: "/contacts",
+  },
+};
 
 async function ContactsList(props: { showAll: boolean }) {
   let contacts;
