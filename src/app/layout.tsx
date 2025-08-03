@@ -15,7 +15,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Google Contacts Birthday Manager",
   description:
-    "Clean up your Google Contacts by removing unwanted birthday notifications from old Facebook syncs and random contacts. Free, secure, and privacy-focused.",
+    "A simple tool to remove birthday info from your Google Contacts. Useful for cleaning up old Facebook syncs and unwanted birthday notifications.",
   keywords: [
     "Google Contacts",
     "Birthday Manager",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Google Contacts Birthday Manager",
     description:
-      "Clean up your Google Contacts by removing unwanted birthday notifications from old Facebook syncs and random contacts.",
+      "A simple tool to remove birthday info from your Google Contacts.",
     type: "website",
     locale: "en_US",
     siteName: "Google Contacts Birthday Manager",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
         url: "/api/og",
         width: 1200,
         height: 630,
-        alt: "Google Contacts Birthday Manager - Clean up your contact birthdays",
+        alt: "Google Contacts Birthday Manager - Remove contact birthdays",
       },
     ],
   },
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Google Contacts Birthday Manager",
     description:
-      "Clean up your Google Contacts by removing unwanted birthday notifications from old Facebook syncs and random contacts.",
+      "A simple tool to remove birthday info from your Google Contacts.",
     creator: "@GoogleContactsBirthdayManager",
   },
   robots: {
@@ -85,9 +85,9 @@ const structuredData: WithContext<WebApplication> = {
   "@type": "WebApplication",
   name: "Google Contacts Birthday Manager",
   description:
-    "Clean up your Google Contacts by removing unwanted birthday notifications from old Facebook syncs and random contacts. Free, secure, and privacy-focused.",
+    "A simple tool to remove birthday info from your Google Contacts. Useful for cleaning up old Facebook syncs.",
   url: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
-  applicationCategory: "BusinessApplication",
+  applicationCategory: "Utility",
   operatingSystem: "Web Browser",
   permissions: "https://www.googleapis.com/auth/contacts",
   offers: {
@@ -96,11 +96,10 @@ const structuredData: WithContext<WebApplication> = {
     priceCurrency: "USD",
   },
   featureList: [
-    "View Google Contacts with birthdays",
-    "Remove birthday information selectively",
-    "Secure Google OAuth authentication",
-    "Privacy-focused design",
-    "No data storage on servers",
+    "View contacts with birthdays",
+    "Remove birthday info from contacts",
+    "Google account login",
+    "No data stored on servers",
   ],
   provider: {
     "@type": "Organization",
@@ -122,8 +121,7 @@ const structuredData: WithContext<WebApplication> = {
       "@type": "WebPage",
       name: "Home",
       url: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
-      description:
-        "Main landing page with authentication and features overview",
+      description: "Main page with login and app overview",
     },
     {
       "@type": "WebPage",
@@ -131,8 +129,7 @@ const structuredData: WithContext<WebApplication> = {
       url: `${
         process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
       }/contacts`,
-      description:
-        "Manage and remove birthday information from Google Contacts",
+      description: "Remove birthday info from your Google Contacts",
     },
   ],
 };

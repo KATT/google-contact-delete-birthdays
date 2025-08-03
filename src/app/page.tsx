@@ -29,9 +29,9 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Google Contacts Birthday Manager - Clean Up Contact Birthdays",
+  title: "Google Contacts Birthday Manager - Remove Contact Birthdays",
   description:
-    "Free tool to clean up unwanted birthday notifications from old Facebook syncs in your Google Contacts. Secure, privacy-focused, and easy to use.",
+    "Simple tool to remove birthday info from your Google Contacts. Useful for cleaning up old Facebook syncs.",
   keywords: [
     "Google Contacts cleanup",
     "birthday notifications",
@@ -42,25 +42,25 @@ export const metadata: Metadata = {
     "contact birthday manager",
   ],
   openGraph: {
-    title: "Google Contacts Birthday Manager - Clean Up Contact Birthdays",
+    title: "Google Contacts Birthday Manager - Remove Contact Birthdays",
     description:
-      "Free tool to clean up unwanted birthday notifications from old Facebook syncs in your Google Contacts. Secure, privacy-focused, and easy to use.",
+      "Simple tool to remove birthday info from your Google Contacts.",
     type: "website",
     locale: "en_US",
     images: [
       {
-        url: "/api/og?title=Google%20Contacts%20Birthday%20Manager&description=Free%20tool%20to%20clean%20up%20unwanted%20birthday%20notifications",
+        url: "/api/og?title=Google%20Contacts%20Birthday%20Manager&description=Remove%20birthday%20info%20from%20contacts",
         width: 1200,
         height: 630,
-        alt: "Google Contacts Birthday Manager - Clean up your contact birthdays",
+        alt: "Google Contacts Birthday Manager - Remove contact birthdays",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Google Contacts Birthday Manager - Clean Up Contact Birthdays",
+    title: "Google Contacts Birthday Manager - Remove Contact Birthdays",
     description:
-      "Free tool to clean up unwanted birthday notifications from old Facebook syncs in your Google Contacts.",
+      "Simple tool to remove birthday info from your Google Contacts.",
   },
   alternates: {
     canonical: "/",
@@ -95,8 +95,8 @@ async function AuthCTA() {
         <div className="space-y-8">
           <div className="space-y-6">
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Ready to clean up your contacts? Connect your Google account to
-              get started.
+              Ready to clean up your contacts? Sign in with Google to get
+              started.
             </p>
             <form action={startOAuth}>
               <Button
@@ -108,7 +108,7 @@ async function AuthCTA() {
                   <div className="p-1 rounded-full bg-primary-foreground/20">
                     <Calendar className="h-5 w-5" />
                   </div>
-                  Connect Google Account
+                  Sign in with Google
                 </div>
               </Button>
             </form>
@@ -153,8 +153,8 @@ export default function Home() {
               <span className="text-primary">Birthday Manager</span>
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Clean up your Google Contacts by removing unwanted birthday
-              notifications from old Facebook syncs and random contacts
+              Remove birthday info from your Google Contacts. Useful for
+              cleaning up old Facebook syncs and unwanted notifications.
             </p>
             <div className="flex justify-center gap-3 pt-4">
               <Badge
@@ -162,21 +162,21 @@ export default function Home() {
                 className="px-4 py-2 text-sm font-medium bg-card/50 backdrop-blur-sm border border-border/50"
               >
                 <Gift className="h-4 w-4 mr-2" />
-                Free to use
+                Free
               </Badge>
               <Badge
                 variant="outline"
                 className="px-4 py-2 text-sm font-medium bg-card/30 backdrop-blur-sm"
               >
                 <Shield className="h-4 w-4 mr-2" />
-                Privacy focused
+                No data stored
               </Badge>
               <Badge
                 variant="secondary"
                 className="px-4 py-2 text-sm font-medium bg-card/50 backdrop-blur-sm border border-border/50"
               >
                 <Sparkles className="h-4 w-4 mr-2" />
-                No data stored
+                Easy to use
               </Badge>
             </div>
           </div>
@@ -189,16 +189,16 @@ export default function Home() {
               <div className="p-2 rounded-lg bg-primary/10">
                 <Info className="h-6 w-6 text-primary" />
               </div>
-              Why you need this
+              Why this exists
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground leading-relaxed text-lg">
-              Remember when Facebook automatically synced all your contacts with
-              their birthdays 10+ years ago? Now you&apos;re getting calendar
-              notifications for hundreds of random people you barely know. This
-              tool helps you clean up that mess by selectively removing birthday
-              data from your Google Contacts.
+              Remember when Facebook synced all your contacts with birthdays
+              years ago? Now you get calendar notifications for random people
+              you barely know. This tool lets you remove birthday info from
+              specific contacts so you only get notifications for people you
+              actually care about.
             </p>
           </CardContent>
         </Card>
@@ -212,8 +212,7 @@ export default function Home() {
               </div>
               <CardTitle className="text-xl">View Contacts</CardTitle>
               <CardDescription className="text-base leading-relaxed">
-                See all your contacts that have birthday information with a
-                clean, organized interface
+                See all your contacts that have birthdays in one place
               </CardDescription>
             </CardHeader>
           </Card>
@@ -225,8 +224,8 @@ export default function Home() {
               </div>
               <CardTitle className="text-xl">Remove Birthdays</CardTitle>
               <CardDescription className="text-base leading-relaxed">
-                Selectively delete birthday data from specific contacts with
-                just a few clicks
+                Delete birthday info from contacts you don&apos;t want
+                notifications for
               </CardDescription>
             </CardHeader>
           </Card>
@@ -236,10 +235,10 @@ export default function Home() {
               <div className="p-4 rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 w-fit mb-6 group-hover:scale-110 transition-transform duration-300">
                 <Shield className="h-8 w-8 text-primary" />
               </div>
-              <CardTitle className="text-xl">Secure Access</CardTitle>
+              <CardTitle className="text-xl">Google Login</CardTitle>
               <CardDescription className="text-base leading-relaxed">
-                Uses Google OAuth for secure access to your contacts. No data
-                stored on our servers.
+                Uses Google sign-in to access your contacts. Nothing gets stored
+                on our servers.
               </CardDescription>
             </CardHeader>
           </Card>
@@ -249,10 +248,9 @@ export default function Home() {
         <Alert className="mb-12 bg-card/50 backdrop-blur-sm border border-border/50 shadow-lg">
           <Shield className="h-5 w-5" />
           <AlertDescription className="text-base">
-            <strong>Privacy Notice:</strong> This app only accesses your Google
-            Contacts to show and modify birthday information. No data is stored
-            on our servers, and you can revoke access at any time from your
-            Google Account settings.
+            <strong>Privacy:</strong> This app only reads your contacts to show
+            birthdays. Nothing gets saved on our servers. You can disconnect
+            anytime in your Google settings.
           </AlertDescription>
         </Alert>
 
@@ -284,8 +282,8 @@ export default function Home() {
             </Button>
           </div>
           <p className="text-sm text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            This app requires access to your Google Contacts to function. You
-            can revoke access at any time from your Google Account settings.
+            This app needs access to your Google Contacts to work. You can
+            remove access anytime from your Google Account settings.
           </p>
         </div>
       </div>
