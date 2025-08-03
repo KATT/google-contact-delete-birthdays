@@ -1,9 +1,17 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { handleReauth, setBirthdays } from "@/lib/actions";
 import type { people_v1 } from "googleapis";
-import { AlertTriangle, Loader2, RefreshCw, Undo2, X } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle,
+  Loader2,
+  RefreshCw,
+  Undo2,
+  X,
+} from "lucide-react";
 import { useState, useTransition } from "react";
 
 type State =
@@ -46,10 +54,10 @@ export function DeleteButton(props: {
     case "error":
       return (
         <div className="flex items-center gap-2">
-          <span className="text-destructive text-sm font-medium">
-            <AlertTriangle className="h-4 w-4 inline mr-1" />
+          <Badge variant="destructive" className="gap-1 px-2 py-1">
+            <AlertCircle className="h-3 w-3" />
             Error
-          </span>
+          </Badge>
           {state.requiresReauth && (
             <Button
               variant="outline"
@@ -61,12 +69,13 @@ export function DeleteButton(props: {
               }}
               disabled={isPending}
               title={state.errorMessage}
+              className="gap-1 shadow-sm hover:shadow-md transition-all duration-200"
             >
               {isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="h-3 w-3 animate-spin" />
               ) : (
                 <>
-                  <RefreshCw className="h-4 w-4 mr-1" />
+                  <RefreshCw className="h-3 w-3" />
                   Sign In
                 </>
               )}
@@ -78,7 +87,13 @@ export function DeleteButton(props: {
     case "deleted":
       return (
         <div className="flex items-center gap-2 justify-end w-full">
-          <span className="text-primary text-sm font-medium">✅ Cleared</span>
+          <Badge
+            variant="secondary"
+            className="gap-1 px-3 py-1 bg-primary/10 text-primary border-primary/20"
+          >
+            <CheckCircle className="h-3 w-3" />
+            Cleared
+          </Badge>
           <Button
             variant="outline"
             size="sm"
@@ -101,12 +116,13 @@ export function DeleteButton(props: {
               });
             }}
             disabled={isPending}
+            className="gap-1 shadow-sm hover:shadow-md transition-all duration-200"
           >
             {isPending ? (
-              <Loader2 className="animate-spin" />
+              <Loader2 className="h-3 w-3 animate-spin" />
             ) : (
               <>
-                <Undo2 />
+                <Undo2 className="h-3 w-3" />
                 Undo
               </>
             )}
@@ -157,9 +173,19 @@ export function DeleteButton(props: {
             });
           }}
           disabled={isPending}
+          className="gap-1 shadow-sm hover:shadow-md transition-all duration-200"
         >
-          {isPending ? <Loader2 className="animate-spin" /> : <X />}
-          {isPending ? "Clearing..." : "Clear Birthday"}
+          {isPending ? (
+            <>
+              <Loader2 className="h-3 w-3 animate-spin" />
+              Clearing...
+            </>
+          ) : (
+            <>
+              <X className="h-3 w-3" />
+              Clear Birthday
+            </>
+          )}
         </Button>
       );
     default:
