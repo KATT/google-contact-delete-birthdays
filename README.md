@@ -9,3 +9,7 @@ A web application to easily manage and remove birthday information from your Goo
 - 🗑️ Selectively delete birthday data from contacts
 - 🎨 Modern, responsive UI built with Next.js and Shadcn UI
 - 🔒 Privacy-first: No data stored on servers
+
+## Note
+
+This project was mainly vibe coded, so please don't judge the code quality
