@@ -38,6 +38,9 @@ export const metadata: Metadata = {
   title: "Manage Contact Birthdays - Google Contacts Birthday Manager",
 };
 
+// Disable caching for this page
+export const dynamic = "force-dynamic";
+
 async function ContactsList(props: { showAll: boolean }) {
   let contacts;
   try {
@@ -305,8 +308,7 @@ export default async function ContactsPage(props: {
     redirect("/");
   }
 
-  const { showAll } = await props.searchParams;
-  const isShowingAll = showAll === "1";
+  const showAll = (await props.searchParams).showAll === "1";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
@@ -344,11 +346,11 @@ export default async function ContactsPage(props: {
             className="w-fit shadow-md hover:shadow-lg transition-all duration-200"
           >
             <Link
-              href={isShowingAll ? "/contacts" : "/contacts?showAll=1"}
+              href={showAll ? "/contacts" : "/contacts?showAll=1"}
               prefetch
               className="gap-2"
             >
-              {isShowingAll ? (
+              {showAll ? (
                 <>
                   <EyeOff className="h-4 w-4" />
                   Show only Contacts with Birthdays
@@ -363,7 +365,7 @@ export default async function ContactsPage(props: {
           </Button>
 
           <div className="text-sm text-muted-foreground">
-            {isShowingAll
+            {showAll
               ? "Showing all contacts"
               : "Showing contacts with birthdays only"}
           </div>
@@ -371,7 +373,7 @@ export default async function ContactsPage(props: {
 
         {/* Contacts List */}
         <Suspense fallback={<ContactsPageSkeleton />}>
-          <ContactsList showAll={isShowingAll} />
+          <ContactsList showAll={showAll} />
         </Suspense>
       </div>
     </div>
