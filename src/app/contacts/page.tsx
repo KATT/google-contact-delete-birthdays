@@ -253,7 +253,10 @@ export default async function ContactsPage(props: {
       </Alert>
 
       <div className="flex justify-between items-center mb-4">
-        <Link href={isShowingAll ? "/" : "/contacts?showAll=1"} prefetch>
+        <Link
+          href={isShowingAll ? "/contacts" : "/contacts?showAll=1"}
+          prefetch
+        >
           <Button variant="outline" size="sm">
             <Filter className="h-4 w-4 mr-2" />
             {isShowingAll
