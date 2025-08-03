@@ -1,13 +1,12 @@
 import { google } from "googleapis";
 import { cookies } from "next/headers";
+import { env } from "./env";
 
 export function getOAuth2Client() {
   return new google.auth.OAuth2(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_CLIENT_SECRET,
-    `${
-      process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000"
-    }/auth/callback`
+    env.GOOGLE_CLIENT_ID,
+    env.GOOGLE_CLIENT_SECRET,
+    `${env.NEXT_PUBLIC_BASE_URL}/auth/callback`
   );
 }
 

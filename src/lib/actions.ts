@@ -3,6 +3,7 @@
 import { google, people_v1 } from "googleapis";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { env } from "./env";
 import { getAuthenticatedClient, getAuthUrl } from "./google";
 
 export async function startOAuth() {
@@ -14,7 +15,7 @@ export async function setAuthToken(options: { token: string }) {
   const cookieStore = await cookies();
   cookieStore.set("google_token", options.token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: env.NODE_ENV === "production",
     sameSite: "strict",
     maxAge: 60 * 60 * 24 * 7, // 7 days
   });

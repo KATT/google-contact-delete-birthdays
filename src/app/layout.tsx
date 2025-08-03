@@ -1,5 +1,6 @@
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { NextThemeProvider } from "@/components/ui/theme-provider";
+import { env } from "@/lib/env";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -29,9 +30,7 @@ export const metadata: Metadata = {
   applicationName: "Google Contacts Birthday Manager",
   generator: "Next.js",
   category: "productivity",
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-  ),
+  metadataBase: new URL(env.NEXT_PUBLIC_BASE_URL),
   openGraph: {
     title: "Google Contacts Birthday Manager",
     description:
@@ -86,7 +85,7 @@ const structuredData: WithContext<WebApplication> = {
   name: "Google Contacts Birthday Manager",
   description:
     "A simple tool to remove birthday info from your Google Contacts. Useful for cleaning up old Facebook syncs.",
-  url: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
+  url: env.NEXT_PUBLIC_BASE_URL,
   applicationCategory: "Utility",
   operatingSystem: "Web Browser",
   permissions: "https://www.googleapis.com/auth/contacts",
@@ -104,7 +103,7 @@ const structuredData: WithContext<WebApplication> = {
   provider: {
     "@type": "Organization",
     name: "Google Contacts Birthday Manager",
-    url: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
+    url: env.NEXT_PUBLIC_BASE_URL,
   },
   creator: {
     "@type": "Organization",
@@ -120,15 +119,13 @@ const structuredData: WithContext<WebApplication> = {
     {
       "@type": "WebPage",
       name: "Home",
-      url: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
+      url: env.NEXT_PUBLIC_BASE_URL,
       description: "Main page with login and app overview",
     },
     {
       "@type": "WebPage",
       name: "Contacts Management",
-      url: `${
-        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
-      }/contacts`,
+      url: `${env.NEXT_PUBLIC_BASE_URL}/contacts`,
       description: "Remove birthday info from your Google Contacts",
     },
   ],
@@ -152,12 +149,9 @@ export default function RootLayout({
         >
           <main className="relative">{children}</main>
 
-          {/* Development Mode Toggle - Fixed Position */}
-          {process.env.NODE_ENV === "development" && (
-            <div className="fixed bottom-4 right-4 z-[9999]">
-              <ModeToggle />
-            </div>
-          )}
+          <div className="fixed bottom-4 right-4 z-[9999]">
+            <ModeToggle />
+          </div>
         </NextThemeProvider>
 
         <GoogleAnalytics gaId="G-EB4554NYR8" />

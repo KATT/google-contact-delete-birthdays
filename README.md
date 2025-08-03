@@ -19,6 +19,33 @@ A web application to easily manage birthday information in your Google Contacts.
 - **Update incorrect birthdays**: Edit existing birthday information
 - **Organize notifications**: Keep your calendar clean with only relevant birthday reminders
 
+## Environment Variables
+
+This project uses [T3 Env](https://env.t3.gg/) for type-safe environment variable validation. Create a `.env` file in the root directory with the following variables:
+
+```env
+# Google OAuth Configuration
+GOOGLE_CLIENT_ID=your_google_client_id_here
+GOOGLE_CLIENT_SECRET=your_google_client_secret_here
+
+# Application Configuration
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+
+# Environment
+NODE_ENV=development
+```
+
+### Required Variables
+
+- `GOOGLE_CLIENT_ID`: Your Google OAuth client ID
+- `GOOGLE_CLIENT_SECRET`: Your Google OAuth client secret
+- `NODE_ENV`: Environment (development, production, test)
+
+### Optional Variables
+
+- `NEXT_PUBLIC_BASE_URL`: Base URL for the application (defaults to http://localhost:3000)
+- `SKIP_ENV_VALIDATION`: Set to `true` to skip environment validation (for testing)
+
 ## Note
 
 This project was mainly vibe coded, so please don't judge the code quality
