@@ -1,3 +1,4 @@
+import { AuthError } from "@/components/auth-error";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,9 +10,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { isAuthenticated, startOAuth } from "@/lib/actions";
 import {
-  AlertTriangle,
   Calendar,
   CheckCircle,
   Gift,
@@ -25,6 +26,7 @@ import {
 } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Google Contacts Birthday Manager - Clean Up Contact Birthdays",
@@ -65,35 +67,74 @@ export const metadata: Metadata = {
   },
 };
 
-interface HomeProps {
-  searchParams: Promise<{
-    error?: string;
-  }>;
+async function AuthCTA() {
+  const authenticated = await isAuthenticated();
+
+  return (
+    <div className="text-center space-y-8">
+      {authenticated ? (
+        <div className="space-y-8">
+          <div className="flex items-center justify-center gap-3 text-primary font-semibold text-lg">
+            <div className="p-2 rounded-full bg-primary/10">
+              <CheckCircle className="h-6 w-6" />
+            </div>
+            You&apos;re already authenticated!
+          </div>
+          <Button
+            size="lg"
+            asChild
+            className="h-14 px-12 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
+          >
+            <Link href="/contacts" className="flex items-center gap-3">
+              <Zap className="h-5 w-5" />
+              View Your Contacts
+            </Link>
+          </Button>
+        </div>
+      ) : (
+        <div className="space-y-8">
+          <div className="space-y-6">
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Ready to clean up your contacts? Connect your Google account to
+              get started.
+            </p>
+            <form action={startOAuth}>
+              <Button
+                size="lg"
+                variant="default"
+                className="h-14 px-12 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-1 rounded-full bg-primary-foreground/20">
+                    <Calendar className="h-5 w-5" />
+                  </div>
+                  Connect Google Account
+                </div>
+              </Button>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
-export default async function Home({ searchParams }: HomeProps) {
-  const authenticated = await isAuthenticated();
-  const { error } = await searchParams;
+function AuthCTALoading() {
+  return (
+    <div className="text-center space-y-8">
+      <div className="space-y-6">
+        <Skeleton className="h-6 w-96 mx-auto" />
+        <Skeleton className="h-14 w-64 mx-auto rounded-lg" />
+      </div>
+    </div>
+  );
+}
 
+export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <div className="container mx-auto px-4 py-12 max-w-6xl">
-        {error && (
-          <Alert className="mb-8 border-destructive/50 bg-destructive/10 backdrop-blur-sm">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>
-              <strong>Authentication Error:</strong>{" "}
-              {error === "oauth_error" &&
-                "OAuth authentication failed. Please try again."}
-              {error === "no_code" &&
-                "No authorization code received. Please try again."}
-              {error === "token_error" &&
-                "Failed to exchange code for token. Please try again."}
-              {!["oauth_error", "no_code", "token_error"].includes(error) &&
-                "An unexpected error occurred. Please try again."}
-            </AlertDescription>
-          </Alert>
-        )}
+        <AuthError />
 
         {/* Hero Section */}
         <div className="text-center mb-20">
@@ -216,51 +257,9 @@ export default async function Home({ searchParams }: HomeProps) {
         <Separator className="my-12 bg-border/50" />
 
         {/* Call to Action */}
-        <div className="text-center space-y-8">
-          {authenticated ? (
-            <div className="space-y-8">
-              <div className="flex items-center justify-center gap-3 text-primary font-semibold text-lg">
-                <div className="p-2 rounded-full bg-primary/10">
-                  <CheckCircle className="h-6 w-6" />
-                </div>
-                You&apos;re already authenticated!
-              </div>
-              <Button
-                size="lg"
-                asChild
-                className="h-14 px-12 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
-              >
-                <Link href="/contacts" className="flex items-center gap-3">
-                  <Zap className="h-5 w-5" />
-                  View Your Contacts
-                </Link>
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-8">
-              <div className="space-y-6">
-                <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                  Ready to clean up your contacts? Connect your Google account
-                  to get started.
-                </p>
-                <form action={startOAuth}>
-                  <Button
-                    size="lg"
-                    variant="default"
-                    className="h-14 px-12 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="p-1 rounded-full bg-primary-foreground/20">
-                        <Calendar className="h-5 w-5" />
-                      </div>
-                      Connect Google Account
-                    </div>
-                  </Button>
-                </form>
-              </div>
-            </div>
-          )}
-        </div>
+        <Suspense fallback={<AuthCTALoading />}>
+          <AuthCTA />
+        </Suspense>
 
         {/* Footer */}
         <div className="mt-20 text-center space-y-6">
