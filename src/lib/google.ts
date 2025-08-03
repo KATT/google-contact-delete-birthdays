@@ -66,12 +66,45 @@ export async function fetchAllContacts() {
   return responses
     .flatMap((it) => it.data.connections || [])
     .map((it) => {
-      const displayName = it.names?.[0]?.displayName || null;
+      const primaryName =
+        it.names?.find((it) => it.metadata?.primary) || it.names?.[0];
+
+      const primaryEmail =
+        it.emailAddresses?.find((it) => it.metadata?.primary)?.value ||
+        it.emailAddresses?.[0]?.value ||
+        null;
+
+      const primaryPhoneNumber =
+        it.phoneNumbers?.find((it) => it.metadata?.primary)?.value ||
+        it.phoneNumbers?.[0]?.value ||
+        null;
+      const displayName =
+        primaryName?.displayName ||
+        [primaryName?.givenName, primaryName?.familyName]
+          .filter(Boolean)
+          .join(" ") ||
+        primaryEmail ||
+        primaryPhoneNumber ||
+        null;
+
       return {
         ...it,
         displayName,
         hasBirthday: it.birthdays?.some((it) => it.date),
       };
+    })
+    .filter((it) => {
+      if (!it.displayName && !it.hasBirthday) {
+        console.dir(
+          {
+            msg: "No display name or birthday found",
+            contact: it,
+          },
+          { depth: null }
+        );
+        return false;
+      }
+      return true;
     })
     .sort((a, b) => {
       if (a.displayName && b.displayName) {
