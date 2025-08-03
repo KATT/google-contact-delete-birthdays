@@ -6,8 +6,6 @@ export const runtime = "edge";
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const title =
-      searchParams.get("title") || "Google Contacts Birthday Manager";
     const description =
       searchParams.get("description") ||
       "Clean up your Google Contacts by removing unwanted birthday notifications from old Facebook syncs and random contacts.";
