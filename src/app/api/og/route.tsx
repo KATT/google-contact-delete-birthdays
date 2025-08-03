@@ -22,27 +22,61 @@ export async function GET(request: NextRequest) {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: "#ffffff",
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            // Match the page gradient: from-background via-background to-primary/5
+            background:
+              "linear-gradient(135deg, #f8f9fc 0%, #f8f9fc 50%, #f0f9f4 100%)",
             padding: "60px",
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "Inter, DM Sans, sans-serif",
+            position: "relative",
           }}
         >
+          {/* Background blur effects to match glassmorphism */}
+          <div
+            style={{
+              position: "absolute",
+              top: "20%",
+              left: "10%",
+              width: "300px",
+              height: "300px",
+              background:
+                "linear-gradient(135deg, rgba(114, 194, 164, 0.1) 0%, rgba(114, 194, 164, 0.05) 100%)",
+              borderRadius: "50%",
+              filter: "blur(40px)",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              bottom: "20%",
+              right: "10%",
+              width: "250px",
+              height: "250px",
+              background:
+                "linear-gradient(135deg, rgba(114, 194, 164, 0.08) 0%, rgba(114, 194, 164, 0.03) 100%)",
+              borderRadius: "50%",
+              filter: "blur(30px)",
+            }}
+          />
+
           <div
             style={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: "rgba(255, 255, 255, 0.95)",
+              // Match the card styling with backdrop blur
+              backgroundColor: "rgba(255, 255, 255, 0.8)",
               borderRadius: "24px",
-              padding: "60px",
+              padding: "80px 60px",
               maxWidth: "900px",
-              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-              border: "1px solid rgba(255, 255, 255, 0.2)",
+              backdropFilter: "blur(10px)",
+              border: "1px solid rgba(228, 228, 231, 0.5)",
+              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.08)",
+              position: "relative",
+              zIndex: 1,
             }}
           >
-            {/* Icon */}
+            {/* Calendar icon with gradient background - matching the page hero */}
             <div
               style={{
                 display: "flex",
@@ -50,20 +84,34 @@ export async function GET(request: NextRequest) {
                 justifyContent: "center",
                 width: "120px",
                 height: "120px",
-                backgroundColor: "#667eea",
+                background:
+                  "linear-gradient(135deg, rgba(114, 194, 164, 0.2) 0%, rgba(114, 194, 164, 0.1) 50%, transparent 100%)",
                 borderRadius: "24px",
-                marginBottom: "30px",
+                marginBottom: "40px",
+                border: "1px solid rgba(114, 194, 164, 0.2)",
+                position: "relative",
               }}
             >
+              {/* Animated pulse effect */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: "0",
+                  borderRadius: "24px",
+                  background:
+                    "linear-gradient(135deg, rgba(114, 194, 164, 0.05) 0%, transparent 100%)",
+                }}
+              />
               <svg
                 width="60"
                 height="60"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="white"
+                stroke="rgb(114, 194, 164)"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                style={{ position: "relative", zIndex: 1 }}
               >
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                 <line x1="16" y1="2" x2="16" y2="6" />
@@ -72,42 +120,59 @@ export async function GET(request: NextRequest) {
               </svg>
             </div>
 
-            {/* Title */}
+            {/* Title with gradient text effect matching the page */}
             <h1
               style={{
                 fontSize: "48px",
                 fontWeight: "bold",
-                color: "#1a202c",
                 textAlign: "center",
-                lineHeight: "1.2",
-                marginBottom: "20px",
+                lineHeight: "1.1",
+                marginBottom: "24px",
                 maxWidth: "800px",
+                background:
+                  "linear-gradient(135deg, #3c4043 0%, #3c4043 70%, rgba(60, 64, 67, 0.7) 100%)",
+                backgroundClip: "text",
+                WebkitBackgroundClip: "text",
+                color: "transparent",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
               }}
             >
-              {title}
+              <div style={{ marginBottom: "8px" }}>Google Contacts</div>
+              <div
+                style={{
+                  background: "rgb(114, 194, 164)",
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  color: "transparent",
+                }}
+              >
+                Birthday Manager
+              </div>
             </h1>
 
             {/* Description */}
             <p
               style={{
-                fontSize: "24px",
-                color: "#4a5568",
+                fontSize: "20px",
+                color: "#6b7280",
                 textAlign: "center",
-                lineHeight: "1.4",
+                lineHeight: "1.5",
                 maxWidth: "700px",
-                margin: "0",
+                margin: "0 0 40px 0",
               }}
             >
               {description}
             </p>
 
-            {/* Features */}
+            {/* Feature badges matching the page design */}
             <div
               style={{
                 display: "flex",
-                gap: "30px",
-                marginTop: "40px",
+                gap: "20px",
                 justifyContent: "center",
+                flexWrap: "wrap",
               }}
             >
               <div
@@ -115,24 +180,25 @@ export async function GET(request: NextRequest) {
                   display: "flex",
                   alignItems: "center",
                   gap: "8px",
-                  backgroundColor: "#f7fafc",
+                  backgroundColor: "rgba(248, 250, 252, 0.5)",
                   padding: "12px 20px",
                   borderRadius: "12px",
-                  border: "1px solid #e2e8f0",
+                  border: "1px solid rgba(228, 228, 231, 0.5)",
+                  backdropFilter: "blur(4px)",
                 }}
               >
                 <div
                   style={{
                     width: "16px",
                     height: "16px",
-                    backgroundColor: "#48bb78",
+                    backgroundColor: "rgb(34, 197, 94)",
                     borderRadius: "50%",
                   }}
                 />
                 <span
                   style={{
-                    fontSize: "18px",
-                    color: "#2d3748",
+                    fontSize: "16px",
+                    color: "#374151",
                     fontWeight: "500",
                   }}
                 >
@@ -144,24 +210,25 @@ export async function GET(request: NextRequest) {
                   display: "flex",
                   alignItems: "center",
                   gap: "8px",
-                  backgroundColor: "#f7fafc",
+                  backgroundColor: "rgba(248, 250, 252, 0.5)",
                   padding: "12px 20px",
                   borderRadius: "12px",
-                  border: "1px solid #e2e8f0",
+                  border: "1px solid rgba(228, 228, 231, 0.5)",
+                  backdropFilter: "blur(4px)",
                 }}
               >
                 <div
                   style={{
                     width: "16px",
                     height: "16px",
-                    backgroundColor: "#667eea",
+                    backgroundColor: "rgb(114, 194, 164)",
                     borderRadius: "50%",
                   }}
                 />
                 <span
                   style={{
-                    fontSize: "18px",
-                    color: "#2d3748",
+                    fontSize: "16px",
+                    color: "#374151",
                     fontWeight: "500",
                   }}
                 >
@@ -173,24 +240,25 @@ export async function GET(request: NextRequest) {
                   display: "flex",
                   alignItems: "center",
                   gap: "8px",
-                  backgroundColor: "#f7fafc",
+                  backgroundColor: "rgba(248, 250, 252, 0.5)",
                   padding: "12px 20px",
                   borderRadius: "12px",
-                  border: "1px solid #e2e8f0",
+                  border: "1px solid rgba(228, 228, 231, 0.5)",
+                  backdropFilter: "blur(4px)",
                 }}
               >
                 <div
                   style={{
                     width: "16px",
                     height: "16px",
-                    backgroundColor: "#ed8936",
+                    backgroundColor: "rgb(251, 146, 60)",
                     borderRadius: "50%",
                   }}
                 />
                 <span
                   style={{
-                    fontSize: "18px",
-                    color: "#2d3748",
+                    fontSize: "16px",
+                    color: "#374151",
                     fontWeight: "500",
                   }}
                 >
