@@ -1,3 +1,5 @@
+import { ModeToggle } from "@/components/ui/mode-toggle";
+import { NextThemeProvider } from "@/components/ui/theme-provider";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -145,7 +147,21 @@ export default function RootLayout({
       <body
         className={`${inter.className} font-sans antialiased bg-background text-foreground min-h-screen w-full selection:bg-primary/20 selection:text-primary-foreground`}
       >
-        <main className="relative">{children}</main>
+        <NextThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <main className="relative">{children}</main>
+
+          {/* Development Mode Toggle - Fixed Position */}
+          {process.env.NODE_ENV === "development" && (
+            <div className="fixed bottom-4 right-4 z-[9999]">
+              <ModeToggle />
+            </div>
+          )}
+        </NextThemeProvider>
 
         <GoogleAnalytics gaId="G-EB4554NYR8" />
 
