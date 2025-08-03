@@ -66,12 +66,20 @@ export async function fetchAllContacts() {
   return responses
     .flatMap((it) => it.data.connections || [])
     .map((it) => {
-      const displayName = it.names?.[0]?.displayName || "Unknown Contact";
+      const displayName = it.names?.[0]?.displayName || null;
       return {
         ...it,
         displayName,
         hasBirthday: it.birthdays?.some((it) => it.date),
       };
     })
-    .sort((a, b) => a.displayName.localeCompare(b.displayName));
+    .sort((a, b) => {
+      if (a.displayName && b.displayName) {
+        return a.displayName.localeCompare(b.displayName);
+      }
+      if (a.displayName) {
+        return -1;
+      }
+      return 1;
+    });
 }

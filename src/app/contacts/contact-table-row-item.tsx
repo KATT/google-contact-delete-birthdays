@@ -49,7 +49,7 @@ interface ContactTableRowProps {
   contact: {
     resourceName: string;
     etag: string;
-    displayName: string;
+    displayName: string | null;
     birthdays?: people_v1.Schema$Birthday[];
   };
   index: number;
@@ -130,7 +130,9 @@ export function ContactTableRow({ contact, index }: ContactTableRowProps) {
           <div className="p-2 rounded-full bg-primary/10">
             <User className="h-4 w-4 text-primary" />
           </div>
-          <span className="text-foreground">{contact.displayName}</span>
+          <span className="text-foreground">
+            {contact.displayName ?? <em>Unknown contact</em>}
+          </span>
         </div>
       </TableCell>
       <TableCell className="py-4 w-0">
