@@ -17,7 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { clearAuthToken, isAuthenticated, startOAuth } from "@/lib/actions";
-import { fetchAllContacts } from "@/lib/google";
+import { fetchAllContacts, getAuthenticatedClient } from "@/lib/google";
 import {
   AlertTriangle,
   ArrowLeft,
@@ -190,7 +190,6 @@ async function GenericError({ errorMessage }: { errorMessage: string }) {
 async function AuthenticationError() {
   async function handleReauth() {
     "use server";
-    await clearAuthToken();
     await startOAuth();
   }
 
@@ -231,6 +230,11 @@ async function LogoutButton() {
     <form
       action={async () => {
         "use server";
+        const client = await getAuthenticatedClient();
+        await client?.revokeCredentials().catch((e) => {
+          console.error("Error revoking credentials:", e);
+        });
+
         await clearAuthToken();
         redirect("/");
       }}
