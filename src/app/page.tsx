@@ -232,8 +232,8 @@ export default function Home() {
           <Shield className="h-5 w-5" />
           <AlertDescription className="text-base">
             <strong>Privacy:</strong> This app only reads your contacts to show
-            birthdays. Nothing gets saved on our servers. You can disconnect
-            anytime in your Google settings.
+            birthdays. Nothing gets saved on our servers. When you logout, we
+            automatically revoke our app&apos;s access to your Google account.
           </AlertDescription>
         </Alert>
 
@@ -271,8 +271,9 @@ export default function Home() {
             </Button>
           </div>
           <p className="text-sm text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            This app needs access to your Google Contacts to work. You can
-            remove access anytime from your Google Account settings.
+            This app needs access to your Google Contacts to work. Access is
+            automatically revoked when you logout, or you can remove it anytime
+            from your Google Account settings.
           </p>
         </div>
       </div>
