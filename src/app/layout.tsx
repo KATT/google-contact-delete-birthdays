@@ -4,6 +4,7 @@ import { env } from "@/lib/env";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Link from "next/link";
 import { WebApplication, WithContext } from "schema-dts";
 import "./globals.css";
 
@@ -139,7 +140,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body
-        className={`${inter.className} font-sans antialiased bg-background text-foreground min-h-screen w-full selection:bg-primary/20 selection:text-primary-foreground`}
+        className={`${inter.className} font-sans antialiased bg-background text-foreground min-h-screen w-full selection:bg-primary/20 selection:text-primary-foreground flex flex-col`}
       >
         <NextThemeProvider
           attribute="class"
@@ -147,7 +148,31 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <main className="relative">{children}</main>
+          <main className="relative flex-1">{children}</main>
+
+          {/* Footer */}
+          <footer className="border-t border-border/50 bg-background/50 backdrop-blur-sm">
+            <div className="container mx-auto px-4 py-6">
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div className="flex items-center gap-6 justify-end">
+                  <Link
+                    href="/privacy-policy"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Privacy Policy
+                  </Link>
+                  <Link
+                    href="https://github.com/KATT/google-contact-delete-birthdays"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    View Source Code
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </footer>
 
           <div className="fixed bottom-4 right-4 z-[9999]">
             <ModeToggle />
