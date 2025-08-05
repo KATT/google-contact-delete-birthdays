@@ -24,9 +24,9 @@ export default function Layout(props: { children: React.ReactNode }) {
         </div>
 
         {/* Content */}
-        <main className="prose prose-neutral dark:prose-invert max-w-none">
+        <div className="prose prose-neutral dark:prose-invert">
           {props.children}
-        </main>
+        </div>
       </div>
     </div>
   );

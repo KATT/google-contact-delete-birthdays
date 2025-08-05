@@ -156,10 +156,16 @@ export default function RootLayout({
               <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div className="flex items-center gap-6 justify-end">
                   <Link
-                    href="/privacy-policy"
+                    href="/docs/privacy"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     Privacy Policy
+                  </Link>
+                  <Link
+                    href="/docs/toc"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Terms of Service
                   </Link>
                   <Link
                     href="https://github.com/KATT/google-contact-delete-birthdays"
